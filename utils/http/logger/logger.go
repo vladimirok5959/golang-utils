@@ -46,11 +46,9 @@ func LogRequests(handler http.Handler) http.Handler {
 			Status:         http.StatusOK,
 		}
 		handler.ServeHTTP(nw, r)
-		duration := time.Since(start)
-
 		log.Printf(
 			"\"%s\" \"%s %s\" %d \"%.3f ms\"\n",
-			ClientIP(r), r.Method, r.URL, nw.Status, duration.Seconds(),
+			ClientIP(r), r.Method, r.URL, nw.Status, time.Since(start).Seconds(),
 		)
 	})
 }
