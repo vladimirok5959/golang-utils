@@ -38,7 +38,6 @@ func HandlerApplicationStatus() http.Handler {
 			`{"alloc":"%v","total_alloc":"%v","sys":"%v","num_gc":"%v"}`,
 			m.Alloc, m.TotalAlloc, m.Sys, m.NumGC,
 		)
-		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Content-Type", "application/json")
 		if _, err := w.Write([]byte(fmt.Sprintf(`{"routines":%d,"memory":%s}`, runtime.NumGoroutine(), memory))); err != nil {
 			log.Printf("%s\n", err.Error())
@@ -52,7 +51,6 @@ func HandlerBuildInFile(data, contentType string) http.Handler {
 			RespondAsMethodNotAllowed(w, r)
 			return
 		}
-		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Content-Type", contentType)
 		if _, err := w.Write([]byte(data)); err != nil {
 			fmt.Printf("%s\n", err.Error())
@@ -70,7 +68,6 @@ func MinifyHtmlCode(str string) string {
 func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error) {
 	if err != nil {
 		log.Printf("%s\n", err.Error())
-		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		if _, e := w.Write([]byte(`{"error":"` + strconv.Quote(err.Error()) + `"}`)); e != nil {
