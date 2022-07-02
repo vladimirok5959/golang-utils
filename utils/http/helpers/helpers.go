@@ -84,7 +84,14 @@ func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request) {
 
 // Example:
 //
-// sess := helpers.SessionStart(w, r)
+// sess, err := helpers.SessionStart(w, r)
+//
+// if err != nil && !errors.Is(err, os.ErrNotExist) {
+//
+//	helpers.RespondAsBadRequest(w, r, err)
+// 	return
+//
+// }
 //
 // defer sess.Close()
 func SessionStart(w http.ResponseWriter, r *http.Request) (*session.Session, error) {
