@@ -102,15 +102,22 @@ func SessionStart(w http.ResponseWriter, r *http.Request) (*session.Session, err
 	return sess, err
 }
 
+// Example:
+//
+// if err = r.ParseForm(); err != nil {
+// 	helpers.RespondAsBadRequest(w, r, err)
+// 	return
+// }
+//
+// if err = helpers.SetLanguageCookie(w, r); err != nil {
+// 		helpers.RespondAsBadRequest(w, r, err)
+// 		return
+// }
 func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error {
 	var clang string
 	if c, err := r.Cookie("lang"); err == nil {
 		clang = c.Value
 	}
-	// if err := r.ParseForm(); err != nil {
-	// 	RespondAsBadRequest(w, r, err)
-	// 	return err
-	// }
 	lang := r.Form.Get("lang")
 	if lang != "" && lang != clang {
 		http.SetCookie(w, &http.Cookie{
