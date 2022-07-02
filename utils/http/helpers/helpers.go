@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"time"
 
 	"github.com/vladimirok5959/golang-server-sessions/session"
 )
@@ -51,4 +52,25 @@ func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error) {
 
 func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusMethodNotAllowed)
+}
+
+func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error {
+	var clang string
+	if c, err := r.Cookie("lang"); err == nil {
+		clang = c.Value
+	}
+	// if err := r.ParseForm(); err != nil {
+	// 	RespondAsBadRequest(w, r, err)
+	// 	return err
+	// }
+	lang := r.Form.Get("lang")
+	if lang != "" && lang != clang {
+		http.SetCookie(w, &http.Cookie{
+			Name:     "lang",
+			Value:    lang,
+			Expires:  time.Now().Add(365 * 24 * time.Hour),
+			HttpOnly: true,
+		})
+	}
+	return nil
 }
