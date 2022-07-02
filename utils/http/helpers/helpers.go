@@ -2,10 +2,12 @@ package helpers
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
 	"regexp"
+	"runtime"
 	"strconv"
 	"time"
 
@@ -73,4 +75,24 @@ func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error {
 		})
 	}
 	return nil
+}
+
+func HandlerApplicationStatus() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			RespondAsMethodNotAllowed(w, r)
+			return
+		}
+		var m runtime.MemStats
+		runtime.ReadMemStats(&m)
+		memory := fmt.Sprintf(
+			`{"alloc":"%v","total_alloc":"%v","sys":"%v","num_gc":"%v"}`,
+			m.Alloc, m.TotalAlloc, m.Sys, m.NumGC,
+		)
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		w.Header().Set("Content-Type", "application/json")
+		if _, err := w.Write([]byte(fmt.Sprintf(`{"routines":%d,"memory":%s}`, runtime.NumGoroutine(), memory))); err != nil {
+			log.Printf("%s\n", err.Error())
+		}
+	})
 }
