@@ -23,8 +23,8 @@ import (
 // func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error
 
 var mHtml = regexp.MustCompile(`>[\n\t\r\s]+<`)
-var mHtmlLeft = regexp.MustCompile(`>[\n\t\r\s]+`)
-var mHtmlRight = regexp.MustCompile(`[\n\t\r\s]+<`)
+var mHtmlLeft = regexp.MustCompile(`>[\n\t\r]+`)
+var mHtmlRight = regexp.MustCompile(`[\n\t\r]+<`)
 
 func HandlerApplicationStatus() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
