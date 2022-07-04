@@ -1,3 +1,3 @@
 # golang-utils
 
-Different kind of function for second reusage
+Different kind of functions for second reusage
