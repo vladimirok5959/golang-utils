@@ -28,6 +28,12 @@ var _ = Describe("helpers", func() {
 					<a href="#">Link 1</a>, <a href="#">Link 2</a>
 				</div>
 			`)).To(Equal(`<div><a href="#">Link 1</a>, <a href="#">Link 2</a></div>`))
+
+			Expect(helpers.MinifyHtmlCode(`
+				<div>
+					<b>Contacts:</b> <a href="#">Link 1</a>, <a href="#">Link 2</a>
+				</div>
+			`)).To(Equal(`<div><b>Contacts:</b> <a href="#">Link 1</a>, <a href="#">Link 2</a></div>`))
 		})
 	})
 })

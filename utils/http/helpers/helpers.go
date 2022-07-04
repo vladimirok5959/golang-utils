@@ -22,7 +22,7 @@ import (
 // func SessionStart(w http.ResponseWriter, r *http.Request) (*session.Session, error)
 // func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error
 
-var mHtml = regexp.MustCompile(`>[\n\t\r\s]+<`)
+var mHtml = regexp.MustCompile(`>[\n\t\r]+<`)
 var mHtmlLeft = regexp.MustCompile(`>[\n\t\r]+`)
 var mHtmlRight = regexp.MustCompile(`[\n\t\r]+<`)
 
