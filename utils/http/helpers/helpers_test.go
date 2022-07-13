@@ -98,6 +98,31 @@ var _ = Describe("helpers", func() {
 		})
 	})
 
+	Context("HandleFile", func() {
+		BeforeEach(func() {
+			srv = httptest.NewServer(helpers.HandleFile("MyContent", "my/type"))
+			client = srv.Client()
+		})
+
+		AfterEach(func() {
+			srv.Close()
+		})
+
+		It("handle file", func() {
+			resp, err := client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Content-Type")).To(Equal("my/type"))
+
+			body, err := io.ReadAll(resp.Body)
+			Expect(err).To(Succeed())
+
+			Expect(string(body)).To(Equal("MyContent"))
+		})
+	})
+
 	Context("MinifyHtmlCode", func() {
 		It("minify Html code", func() {
 			Expect(helpers.MinifyHtmlCode(`
