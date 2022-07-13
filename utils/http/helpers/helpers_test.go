@@ -298,6 +298,30 @@ var _ = Describe("helpers", func() {
 				Expect(string(body)).To(MatchRegexp(`{"error":"MyError"}`))
 			})
 		})
+
+		Context("RespondAsMethodNotAllowed", func() {
+			BeforeEach(func() {
+				var getTestHandler = func() http.HandlerFunc {
+					return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						helpers.RespondAsMethodNotAllowed(w, r)
+					})
+				}
+
+				srv = httptest.NewServer(getTestHandler())
+				client = srv.Client()
+				resp, err = client.Get(srv.URL + "/")
+				Expect(err).To(Succeed())
+			})
+
+			AfterEach(func() {
+				Expect(resp.Body.Close()).To(Succeed())
+				srv.Close()
+			})
+
+			It("handle method not allowed", func() {
+				Expect(resp.StatusCode).To(Equal(http.StatusMethodNotAllowed))
+			})
+		})
 	})
 
 	Context("MinifyHtmlCode", func() {
