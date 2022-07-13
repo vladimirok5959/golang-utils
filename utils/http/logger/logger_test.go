@@ -44,7 +44,7 @@ var _ = Describe("logger", func() {
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
-			Expect(buf.String()).To(ContainSubstring("\"GET /\" 200"))
+			Expect(buf.String()).To(ContainSubstring(`"GET /" 200`))
 		})
 	})
 })
