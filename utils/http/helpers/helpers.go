@@ -27,6 +27,7 @@ import (
 // func HandleTextXml(data string) http.Handler
 // func MinifyHtmlCode(str string) string
 // func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error)
+// func RespondAsInternalServerError(w http.ResponseWriter, r *http.Request)
 // func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
 // func SessionStart(w http.ResponseWriter, r *http.Request) (*session.Session, error)
 // func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error
@@ -171,6 +172,10 @@ func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error) {
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
+}
+
+func RespondAsInternalServerError(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusInternalServerError)
 }
 
 func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request) {

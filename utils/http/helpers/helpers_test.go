@@ -299,6 +299,30 @@ var _ = Describe("helpers", func() {
 			})
 		})
 
+		Context("RespondAsInternalServerError", func() {
+			BeforeEach(func() {
+				var handler = func() http.HandlerFunc {
+					return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						helpers.RespondAsInternalServerError(w, r)
+					})
+				}
+
+				srv = httptest.NewServer(handler())
+				client = srv.Client()
+				resp, err = client.Get(srv.URL + "/")
+				Expect(err).To(Succeed())
+			})
+
+			AfterEach(func() {
+				Expect(resp.Body.Close()).To(Succeed())
+				srv.Close()
+			})
+
+			It("handle method not allowed", func() {
+				Expect(resp.StatusCode).To(Equal(http.StatusInternalServerError))
+			})
+		})
+
 		Context("RespondAsMethodNotAllowed", func() {
 			BeforeEach(func() {
 				var handler = func() http.HandlerFunc {
