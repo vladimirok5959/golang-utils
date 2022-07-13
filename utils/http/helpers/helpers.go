@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -61,15 +62,41 @@ func HandleAppStatus() http.Handler {
 			RespondAsMethodNotAllowed(w, r)
 			return
 		}
+
 		var m runtime.MemStats
 		runtime.ReadMemStats(&m)
-		memory := fmt.Sprintf(
-			`{"alloc":"%v","total_alloc":"%v","sys":"%v","num_gc":"%v"}`,
-			m.Alloc, m.TotalAlloc, m.Sys, m.NumGC,
-		)
+
+		type respMemory struct {
+			Alloc      uint64 `json:"alloc"`
+			NumGC      uint32 `json:"num_gc"`
+			Sys        uint64 `json:"sys"`
+			TotalAlloc uint64 `json:"total_alloc"`
+		}
+
+		type respRoot struct {
+			Memory   respMemory `json:"memory"`
+			Routines int        `json:"routines"`
+		}
+
+		resp := respRoot{
+			Memory: respMemory{
+				Alloc:      m.Alloc,
+				NumGC:      m.NumGC,
+				Sys:        m.Sys,
+				TotalAlloc: m.TotalAlloc,
+			},
+			Routines: runtime.NumGoroutine(),
+		}
+
+		j, err := json.Marshal(resp)
+		if err != nil {
+			RespondAsBadRequest(w, r, err)
+			return
+		}
+
 		w.Header().Set("Content-Type", "application/json")
-		if _, err := w.Write([]byte(fmt.Sprintf(`{"routines":%d,"memory":%s}`, runtime.NumGoroutine(), memory))); err != nil {
-			log.Printf("%s\n", err.Error())
+		if _, err := w.Write(j); err != nil {
+			fmt.Printf("%s\n", err.Error())
 		}
 	})
 }
