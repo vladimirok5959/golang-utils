@@ -124,6 +124,30 @@ var _ = Describe("helpers", func() {
 			})
 		})
 
+		Context("HandleImageJpeg", func() {
+			BeforeEach(func() {
+				srv = httptest.NewServer(helpers.HandleImageJpeg("MyContent"))
+				client = srv.Client()
+				resp, err = client.Get(srv.URL + "/")
+				Expect(err).To(Succeed())
+			})
+
+			AfterEach(func() {
+				Expect(resp.Body.Close()).To(Succeed())
+				srv.Close()
+			})
+
+			It("handle image jpeg", func() {
+				Expect(resp.StatusCode).To(Equal(http.StatusOK))
+				Expect(resp.Header.Get("Content-Type")).To(Equal("image/jpeg"))
+
+				body, err := io.ReadAll(resp.Body)
+				Expect(err).To(Succeed())
+
+				Expect(string(body)).To(Equal("MyContent"))
+			})
+		})
+
 		Context("HandleImagePng", func() {
 			BeforeEach(func() {
 				srv = httptest.NewServer(helpers.HandleImagePng("MyContent"))

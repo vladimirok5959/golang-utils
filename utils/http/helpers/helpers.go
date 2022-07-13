@@ -20,6 +20,7 @@ import (
 // func ClientIPs(r *http.Request) []string
 // func HandleAppStatus() http.Handler
 // func HandleFile(data, contentType string) http.Handler
+// func HandleImageJpeg(data string) http.Handler
 // func HandleImagePng(data string) http.Handler
 // func HandleTextCss(data string) http.Handler
 // func HandleTextJavaScript(data string) http.Handler
@@ -112,6 +113,10 @@ func HandleFile(data, contentType string) http.Handler {
 			fmt.Printf("%s\n", err.Error())
 		}
 	})
+}
+
+func HandleImageJpeg(data string) http.Handler {
+	return HandleFile(data, "image/jpeg")
 }
 
 func HandleImagePng(data string) http.Handler {
