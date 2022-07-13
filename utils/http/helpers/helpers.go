@@ -9,7 +9,6 @@ import (
 	"os"
 	"regexp"
 	"runtime"
-	"strconv"
 	"strings"
 	"time"
 
@@ -151,8 +150,23 @@ func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error) {
 		log.Printf("%s\n", err.Error())
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
-		if _, e := w.Write([]byte(`{"error":` + strconv.Quote(err.Error()) + `}`)); e != nil {
-			log.Printf("%s\n", e.Error())
+
+		type respRoot struct {
+			Error string `json:"error"`
+		}
+
+		resp := respRoot{
+			Error: err.Error(),
+		}
+
+		j, err := json.Marshal(resp)
+		if err != nil {
+			log.Printf("%s\n", err.Error())
+			return
+		}
+
+		if _, err := w.Write(j); err != nil {
+			log.Printf("%s\n", err.Error())
 		}
 	} else {
 		w.WriteHeader(http.StatusBadRequest)

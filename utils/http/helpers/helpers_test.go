@@ -1,6 +1,7 @@
 package helpers_test
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -265,6 +266,36 @@ var _ = Describe("helpers", func() {
 				Expect(err).To(Succeed())
 
 				Expect(string(body)).To(Equal("MyContent"))
+			})
+		})
+
+		Context("RespondAsBadRequest", func() {
+			BeforeEach(func() {
+				var getTestHandler = func() http.HandlerFunc {
+					return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+						helpers.RespondAsBadRequest(w, r, fmt.Errorf("MyError"))
+					})
+				}
+
+				srv = httptest.NewServer(getTestHandler())
+				client = srv.Client()
+				resp, err = client.Get(srv.URL + "/")
+				Expect(err).To(Succeed())
+			})
+
+			AfterEach(func() {
+				Expect(resp.Body.Close()).To(Succeed())
+				srv.Close()
+			})
+
+			It("handle bad request", func() {
+				Expect(resp.StatusCode).To(Equal(http.StatusBadRequest))
+				Expect(resp.Header.Get("Content-Type")).To(Equal("application/json"))
+
+				body, err := io.ReadAll(resp.Body)
+				Expect(err).To(Succeed())
+
+				Expect(string(body)).To(MatchRegexp(`{"error":"MyError"}`))
 			})
 		})
 	})
