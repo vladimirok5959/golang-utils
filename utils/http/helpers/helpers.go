@@ -20,6 +20,8 @@ import (
 // func HandleAppStatus() http.Handler
 // func HandleFile(data, contentType string) http.Handler
 // func HandleImagePng(data string) http.Handler
+// func HandleTextJavaScript(data string) http.Handler
+// func HandleTextPlain(data string) http.Handler
 // func MinifyHtmlCode(str string) string
 // func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error)
 // func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
@@ -85,6 +87,14 @@ func HandleFile(data, contentType string) http.Handler {
 
 func HandleImagePng(data string) http.Handler {
 	return HandleFile(data, "image/png")
+}
+
+func HandleTextJavaScript(data string) http.Handler {
+	return HandleFile(data, "text/javascript")
+}
+
+func HandleTextPlain(data string) http.Handler {
+	return HandleFile(data, "text/plain")
 }
 
 func MinifyHtmlCode(str string) string {
