@@ -85,7 +85,7 @@ var _ = Describe("helpers", func() {
 			})
 
 			AfterEach(func() {
-				resp.Body.Close()
+				Expect(resp.Body.Close()).To(Succeed())
 				srv.Close()
 			})
 
@@ -109,7 +109,7 @@ var _ = Describe("helpers", func() {
 			})
 
 			AfterEach(func() {
-				resp.Body.Close()
+				Expect(resp.Body.Close()).To(Succeed())
 				srv.Close()
 			})
 
@@ -133,7 +133,7 @@ var _ = Describe("helpers", func() {
 			})
 
 			AfterEach(func() {
-				resp.Body.Close()
+				Expect(resp.Body.Close()).To(Succeed())
 				srv.Close()
 			})
 
@@ -157,7 +157,7 @@ var _ = Describe("helpers", func() {
 			})
 
 			AfterEach(func() {
-				resp.Body.Close()
+				Expect(resp.Body.Close()).To(Succeed())
 				srv.Close()
 			})
 
@@ -181,7 +181,7 @@ var _ = Describe("helpers", func() {
 			})
 
 			AfterEach(func() {
-				resp.Body.Close()
+				Expect(resp.Body.Close()).To(Succeed())
 				srv.Close()
 			})
 
@@ -205,7 +205,7 @@ var _ = Describe("helpers", func() {
 			})
 
 			AfterEach(func() {
-				resp.Body.Close()
+				Expect(resp.Body.Close()).To(Succeed())
 				srv.Close()
 			})
 
@@ -229,7 +229,7 @@ var _ = Describe("helpers", func() {
 			})
 
 			AfterEach(func() {
-				resp.Body.Close()
+				Expect(resp.Body.Close()).To(Succeed())
 				srv.Close()
 			})
 
