@@ -14,64 +14,6 @@ import (
 )
 
 var _ = Describe("logger", func() {
-	Context("ClientIP", func() {
-		It("return client IP", func() {
-			Expect(logger.ClientIP(&http.Request{
-				RemoteAddr: "127.0.0.1",
-			})).To(Equal("127.0.0.1"))
-
-			Expect(logger.ClientIP(&http.Request{
-				RemoteAddr: "192.168.0.1,127.0.0.1",
-			})).To(Equal("192.168.0.1"))
-
-			Expect(logger.ClientIP(&http.Request{
-				RemoteAddr: "192.168.0.1, 127.0.0.1",
-			})).To(Equal("192.168.0.1"))
-
-			Expect(logger.ClientIP(&http.Request{
-				RemoteAddr: "192.168.0.50,192.168.0.1,127.0.0.1",
-			})).To(Equal("192.168.0.50"))
-
-			Expect(logger.ClientIP(&http.Request{
-				RemoteAddr: "192.168.0.50, 192.168.0.1, 127.0.0.1",
-			})).To(Equal("192.168.0.50"))
-		})
-	})
-
-	Context("ClientIPs", func() {
-		It("return array of client IPs", func() {
-			Expect(logger.ClientIPs(&http.Request{
-				RemoteAddr: "127.0.0.1",
-			})).To(ConsistOf(
-				"127.0.0.1",
-			))
-
-			Expect(logger.ClientIPs(&http.Request{
-				RemoteAddr: "192.168.0.1,127.0.0.1",
-			})).To(ConsistOf(
-				"192.168.0.1", "127.0.0.1",
-			))
-
-			Expect(logger.ClientIPs(&http.Request{
-				RemoteAddr: "192.168.0.1, 127.0.0.1",
-			})).To(ConsistOf(
-				"192.168.0.1", "127.0.0.1",
-			))
-
-			Expect(logger.ClientIPs(&http.Request{
-				RemoteAddr: "192.168.0.50,192.168.0.1,127.0.0.1",
-			})).To(ConsistOf(
-				"192.168.0.50", "192.168.0.1", "127.0.0.1",
-			))
-
-			Expect(logger.ClientIPs(&http.Request{
-				RemoteAddr: "192.168.0.50, 192.168.0.1, 127.0.0.1",
-			})).To(ConsistOf(
-				"192.168.0.50", "192.168.0.1", "127.0.0.1",
-			))
-		})
-	})
-
 	Context("LogRequests", func() {
 		var srv *httptest.Server
 		var client *http.Client

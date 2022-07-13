@@ -1,6 +1,7 @@
 package helpers_test
 
 import (
+	"net/http"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
@@ -9,6 +10,64 @@ import (
 )
 
 var _ = Describe("helpers", func() {
+	Context("ClientIP", func() {
+		It("return client IP", func() {
+			Expect(helpers.ClientIP(&http.Request{
+				RemoteAddr: "127.0.0.1",
+			})).To(Equal("127.0.0.1"))
+
+			Expect(helpers.ClientIP(&http.Request{
+				RemoteAddr: "192.168.0.1,127.0.0.1",
+			})).To(Equal("192.168.0.1"))
+
+			Expect(helpers.ClientIP(&http.Request{
+				RemoteAddr: "192.168.0.1, 127.0.0.1",
+			})).To(Equal("192.168.0.1"))
+
+			Expect(helpers.ClientIP(&http.Request{
+				RemoteAddr: "192.168.0.50,192.168.0.1,127.0.0.1",
+			})).To(Equal("192.168.0.50"))
+
+			Expect(helpers.ClientIP(&http.Request{
+				RemoteAddr: "192.168.0.50, 192.168.0.1, 127.0.0.1",
+			})).To(Equal("192.168.0.50"))
+		})
+	})
+
+	Context("ClientIPs", func() {
+		It("return array of client IPs", func() {
+			Expect(helpers.ClientIPs(&http.Request{
+				RemoteAddr: "127.0.0.1",
+			})).To(ConsistOf(
+				"127.0.0.1",
+			))
+
+			Expect(helpers.ClientIPs(&http.Request{
+				RemoteAddr: "192.168.0.1,127.0.0.1",
+			})).To(ConsistOf(
+				"192.168.0.1", "127.0.0.1",
+			))
+
+			Expect(helpers.ClientIPs(&http.Request{
+				RemoteAddr: "192.168.0.1, 127.0.0.1",
+			})).To(ConsistOf(
+				"192.168.0.1", "127.0.0.1",
+			))
+
+			Expect(helpers.ClientIPs(&http.Request{
+				RemoteAddr: "192.168.0.50,192.168.0.1,127.0.0.1",
+			})).To(ConsistOf(
+				"192.168.0.50", "192.168.0.1", "127.0.0.1",
+			))
+
+			Expect(helpers.ClientIPs(&http.Request{
+				RemoteAddr: "192.168.0.50, 192.168.0.1, 127.0.0.1",
+			})).To(ConsistOf(
+				"192.168.0.50", "192.168.0.1", "127.0.0.1",
+			))
+		})
+	})
+
 	Context("MinifyHtmlCode", func() {
 		It("minify Html code", func() {
 			Expect(helpers.MinifyHtmlCode(`

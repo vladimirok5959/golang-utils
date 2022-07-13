@@ -3,8 +3,9 @@ package logger
 import (
 	"log"
 	"net/http"
-	"strings"
 	"time"
+
+	"github.com/vladimirok5959/golang-utils/utils/http/helpers"
 )
 
 type ResponseWriter struct {
@@ -17,27 +18,6 @@ func (r *ResponseWriter) WriteHeader(status int) {
 	r.ResponseWriter.WriteHeader(status)
 }
 
-func ClientIP(r *http.Request) string {
-	ips := ClientIPs(r)
-	if len(ips) >= 1 {
-		return ips[0]
-	}
-	return ""
-}
-
-func ClientIPs(r *http.Request) []string {
-	ra := r.RemoteAddr
-	if xff := strings.Trim(r.Header.Get("X-Forwarded-For"), " "); xff != "" {
-		ra = strings.Join([]string{xff, ra}, ",")
-	}
-	res := []string{}
-	ips := strings.Split(ra, ",")
-	for _, ip := range ips {
-		res = append(res, strings.Trim(ip, " "))
-	}
-	return res
-}
-
 func LogRequests(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -48,7 +28,7 @@ func LogRequests(handler http.Handler) http.Handler {
 		handler.ServeHTTP(nw, r)
 		log.Printf(
 			"\"%s\" \"%s %s\" %d \"%.3f ms\"\n",
-			ClientIP(r), r.Method, r.URL, nw.Status, time.Since(start).Seconds(),
+			helpers.ClientIP(r), r.Method, r.URL, nw.Status, time.Since(start).Seconds(),
 		)
 	})
 }

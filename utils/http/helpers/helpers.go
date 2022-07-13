@@ -9,11 +9,14 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/vladimirok5959/golang-server-sessions/session"
 )
 
+// func ClientIP(r *http.Request) string
+// func ClientIPs(r *http.Request) []string
 // func HandlerApplicationStatus() http.Handler
 // func HandlerBuildInFile(data, contentType string) http.Handler
 // func MinifyHtmlCode(str string) string
@@ -25,6 +28,27 @@ import (
 var mHtml = regexp.MustCompile(`>[\n\t\r]+<`)
 var mHtmlLeft = regexp.MustCompile(`>[\n\t\r]+`)
 var mHtmlRight = regexp.MustCompile(`[\n\t\r]+<`)
+
+func ClientIP(r *http.Request) string {
+	ips := ClientIPs(r)
+	if len(ips) >= 1 {
+		return ips[0]
+	}
+	return ""
+}
+
+func ClientIPs(r *http.Request) []string {
+	ra := r.RemoteAddr
+	if xff := strings.Trim(r.Header.Get("X-Forwarded-For"), " "); xff != "" {
+		ra = strings.Join([]string{xff, ra}, ",")
+	}
+	res := []string{}
+	ips := strings.Split(ra, ",")
+	for _, ip := range ips {
+		res = append(res, strings.Trim(ip, " "))
+	}
+	return res
+}
 
 func HandlerApplicationStatus() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
