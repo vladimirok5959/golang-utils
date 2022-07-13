@@ -19,6 +19,7 @@ import (
 // func ClientIPs(r *http.Request) []string
 // func HandleAppStatus() http.Handler
 // func HandleFile(data, contentType string) http.Handler
+// func HandleImagePng(data string) http.Handler
 // func MinifyHtmlCode(str string) string
 // func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error)
 // func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
@@ -80,6 +81,10 @@ func HandleFile(data, contentType string) http.Handler {
 			fmt.Printf("%s\n", err.Error())
 		}
 	})
+}
+
+func HandleImagePng(data string) http.Handler {
+	return HandleFile(data, "image/png")
 }
 
 func MinifyHtmlCode(str string) string {
