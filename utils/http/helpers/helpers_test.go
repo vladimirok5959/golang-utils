@@ -133,13 +133,113 @@ var _ = Describe("helpers", func() {
 			srv.Close()
 		})
 
-		It("handle file", func() {
+		It("handle image png", func() {
 			resp, err := client.Get(srv.URL + "/")
 			Expect(err).To(Succeed())
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(resp.Header.Get("Content-Type")).To(Equal("image/png"))
+
+			body, err := io.ReadAll(resp.Body)
+			Expect(err).To(Succeed())
+
+			Expect(string(body)).To(Equal("MyContent"))
+		})
+	})
+
+	Context("HandleTextCss", func() {
+		BeforeEach(func() {
+			srv = httptest.NewServer(helpers.HandleTextCss("MyContent"))
+			client = srv.Client()
+		})
+
+		AfterEach(func() {
+			srv.Close()
+		})
+
+		It("handle text css", func() {
+			resp, err := client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Content-Type")).To(Equal("text/css"))
+
+			body, err := io.ReadAll(resp.Body)
+			Expect(err).To(Succeed())
+
+			Expect(string(body)).To(Equal("MyContent"))
+		})
+	})
+
+	Context("HandleTextJavaScript", func() {
+		BeforeEach(func() {
+			srv = httptest.NewServer(helpers.HandleTextJavaScript("MyContent"))
+			client = srv.Client()
+		})
+
+		AfterEach(func() {
+			srv.Close()
+		})
+
+		It("handle text javascript", func() {
+			resp, err := client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Content-Type")).To(Equal("text/javascript"))
+
+			body, err := io.ReadAll(resp.Body)
+			Expect(err).To(Succeed())
+
+			Expect(string(body)).To(Equal("MyContent"))
+		})
+	})
+
+	Context("HandleTextPlain", func() {
+		BeforeEach(func() {
+			srv = httptest.NewServer(helpers.HandleTextPlain("MyContent"))
+			client = srv.Client()
+		})
+
+		AfterEach(func() {
+			srv.Close()
+		})
+
+		It("handle text plain", func() {
+			resp, err := client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Content-Type")).To(Equal("text/plain"))
+
+			body, err := io.ReadAll(resp.Body)
+			Expect(err).To(Succeed())
+
+			Expect(string(body)).To(Equal("MyContent"))
+		})
+	})
+
+	Context("HandleTextXml", func() {
+		BeforeEach(func() {
+			srv = httptest.NewServer(helpers.HandleTextXml("MyContent"))
+			client = srv.Client()
+		})
+
+		AfterEach(func() {
+			srv.Close()
+		})
+
+		It("handle text xml", func() {
+			resp, err := client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Content-Type")).To(Equal("text/xml"))
 
 			body, err := io.ReadAll(resp.Body)
 			Expect(err).To(Succeed())
