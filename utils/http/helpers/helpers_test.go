@@ -14,6 +14,8 @@ import (
 var _ = Describe("helpers", func() {
 	var srv *httptest.Server
 	var client *http.Client
+	var resp *http.Response
+	var err error
 
 	Context("ClientIP", func() {
 		It("return client IP", func() {
@@ -77,17 +79,16 @@ var _ = Describe("helpers", func() {
 		BeforeEach(func() {
 			srv = httptest.NewServer(helpers.HandleAppStatus())
 			client = srv.Client()
+			resp, err = client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
 		})
 
 		AfterEach(func() {
+			resp.Body.Close()
 			srv.Close()
 		})
 
 		It("handle app status", func() {
-			resp, err := client.Get(srv.URL + "/")
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(resp.Header.Get("Content-Type")).To(Equal("application/json"))
 
@@ -102,17 +103,16 @@ var _ = Describe("helpers", func() {
 		BeforeEach(func() {
 			srv = httptest.NewServer(helpers.HandleFile("MyContent", "my/type"))
 			client = srv.Client()
+			resp, err = client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
 		})
 
 		AfterEach(func() {
+			resp.Body.Close()
 			srv.Close()
 		})
 
 		It("handle file", func() {
-			resp, err := client.Get(srv.URL + "/")
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(resp.Header.Get("Content-Type")).To(Equal("my/type"))
 
@@ -127,17 +127,16 @@ var _ = Describe("helpers", func() {
 		BeforeEach(func() {
 			srv = httptest.NewServer(helpers.HandleImagePng("MyContent"))
 			client = srv.Client()
+			resp, err = client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
 		})
 
 		AfterEach(func() {
+			resp.Body.Close()
 			srv.Close()
 		})
 
 		It("handle image png", func() {
-			resp, err := client.Get(srv.URL + "/")
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(resp.Header.Get("Content-Type")).To(Equal("image/png"))
 
@@ -152,17 +151,16 @@ var _ = Describe("helpers", func() {
 		BeforeEach(func() {
 			srv = httptest.NewServer(helpers.HandleTextCss("MyContent"))
 			client = srv.Client()
+			resp, err = client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
 		})
 
 		AfterEach(func() {
+			resp.Body.Close()
 			srv.Close()
 		})
 
 		It("handle text css", func() {
-			resp, err := client.Get(srv.URL + "/")
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(resp.Header.Get("Content-Type")).To(Equal("text/css"))
 
@@ -177,17 +175,16 @@ var _ = Describe("helpers", func() {
 		BeforeEach(func() {
 			srv = httptest.NewServer(helpers.HandleTextJavaScript("MyContent"))
 			client = srv.Client()
+			resp, err = client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
 		})
 
 		AfterEach(func() {
+			resp.Body.Close()
 			srv.Close()
 		})
 
 		It("handle text javascript", func() {
-			resp, err := client.Get(srv.URL + "/")
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(resp.Header.Get("Content-Type")).To(Equal("text/javascript"))
 
@@ -202,17 +199,16 @@ var _ = Describe("helpers", func() {
 		BeforeEach(func() {
 			srv = httptest.NewServer(helpers.HandleTextPlain("MyContent"))
 			client = srv.Client()
+			resp, err = client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
 		})
 
 		AfterEach(func() {
+			resp.Body.Close()
 			srv.Close()
 		})
 
 		It("handle text plain", func() {
-			resp, err := client.Get(srv.URL + "/")
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(resp.Header.Get("Content-Type")).To(Equal("text/plain"))
 
@@ -227,17 +223,16 @@ var _ = Describe("helpers", func() {
 		BeforeEach(func() {
 			srv = httptest.NewServer(helpers.HandleTextXml("MyContent"))
 			client = srv.Client()
+			resp, err = client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
 		})
 
 		AfterEach(func() {
+			resp.Body.Close()
 			srv.Close()
 		})
 
 		It("handle text xml", func() {
-			resp, err := client.Get(srv.URL + "/")
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
 			Expect(resp.Header.Get("Content-Type")).To(Equal("text/xml"))
 
