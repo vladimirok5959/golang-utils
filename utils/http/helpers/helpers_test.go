@@ -271,13 +271,13 @@ var _ = Describe("helpers", func() {
 
 		Context("RespondAsBadRequest", func() {
 			BeforeEach(func() {
-				var getTestHandler = func() http.HandlerFunc {
+				var handler = func() http.HandlerFunc {
 					return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 						helpers.RespondAsBadRequest(w, r, fmt.Errorf("MyError"))
 					})
 				}
 
-				srv = httptest.NewServer(getTestHandler())
+				srv = httptest.NewServer(handler())
 				client = srv.Client()
 				resp, err = client.Get(srv.URL + "/")
 				Expect(err).To(Succeed())
@@ -301,13 +301,13 @@ var _ = Describe("helpers", func() {
 
 		Context("RespondAsMethodNotAllowed", func() {
 			BeforeEach(func() {
-				var getTestHandler = func() http.HandlerFunc {
+				var handler = func() http.HandlerFunc {
 					return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 						helpers.RespondAsMethodNotAllowed(w, r)
 					})
 				}
 
-				srv = httptest.NewServer(getTestHandler())
+				srv = httptest.NewServer(handler())
 				client = srv.Client()
 				resp, err = client.Get(srv.URL + "/")
 				Expect(err).To(Succeed())
