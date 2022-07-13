@@ -17,8 +17,8 @@ import (
 
 // func ClientIP(r *http.Request) string
 // func ClientIPs(r *http.Request) []string
-// func HandlerApplicationStatus() http.Handler
-// func HandlerBuildInFile(data, contentType string) http.Handler
+// func HandleAppStatus() http.Handler
+// func HandleFile(data, contentType string) http.Handler
 // func MinifyHtmlCode(str string) string
 // func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error)
 // func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
@@ -50,7 +50,7 @@ func ClientIPs(r *http.Request) []string {
 	return res
 }
 
-func HandlerApplicationStatus() http.Handler {
+func HandleAppStatus() http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			RespondAsMethodNotAllowed(w, r)
@@ -69,7 +69,7 @@ func HandlerApplicationStatus() http.Handler {
 	})
 }
 
-func HandlerBuildInFile(data, contentType string) http.Handler {
+func HandleFile(data, contentType string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet {
 			RespondAsMethodNotAllowed(w, r)
