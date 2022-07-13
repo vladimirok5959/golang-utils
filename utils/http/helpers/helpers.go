@@ -20,6 +20,7 @@ import (
 // func HandleAppStatus() http.Handler
 // func HandleFile(data, contentType string) http.Handler
 // func HandleImagePng(data string) http.Handler
+// func HandleTextCss(data string) http.Handler
 // func HandleTextJavaScript(data string) http.Handler
 // func HandleTextPlain(data string) http.Handler
 // func HandleTextXml(data string) http.Handler
@@ -88,6 +89,10 @@ func HandleFile(data, contentType string) http.Handler {
 
 func HandleImagePng(data string) http.Handler {
 	return HandleFile(data, "image/png")
+}
+
+func HandleTextCss(data string) http.Handler {
+	return HandleFile(data, "text/css")
 }
 
 func HandleTextJavaScript(data string) http.Handler {
