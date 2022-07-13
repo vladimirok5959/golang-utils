@@ -22,6 +22,7 @@ import (
 // func HandleImagePng(data string) http.Handler
 // func HandleTextJavaScript(data string) http.Handler
 // func HandleTextPlain(data string) http.Handler
+// func HandleTextXml(data string) http.Handler
 // func MinifyHtmlCode(str string) string
 // func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error)
 // func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
@@ -95,6 +96,10 @@ func HandleTextJavaScript(data string) http.Handler {
 
 func HandleTextPlain(data string) http.Handler {
 	return HandleFile(data, "text/plain")
+}
+
+func HandleTextXml(data string) http.Handler {
+	return HandleFile(data, "text/xml")
 }
 
 func MinifyHtmlCode(str string) string {
