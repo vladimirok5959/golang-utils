@@ -3,7 +3,6 @@ package helpers
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -97,7 +96,7 @@ func HandleAppStatus() http.Handler {
 
 		w.Header().Set("Content-Type", "application/json")
 		if _, err := w.Write(j); err != nil {
-			fmt.Printf("%s\n", err.Error())
+			log.Printf("%s\n", err.Error())
 		}
 	})
 }
@@ -110,7 +109,7 @@ func HandleFile(data, contentType string) http.Handler {
 		}
 		w.Header().Set("Content-Type", contentType)
 		if _, err := w.Write([]byte(data)); err != nil {
-			fmt.Printf("%s\n", err.Error())
+			log.Printf("%s\n", err.Error())
 		}
 	})
 }
