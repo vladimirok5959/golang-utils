@@ -5,8 +5,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/rollbar/rollbar-go"
 	"github.com/vladimirok5959/golang-utils/utils/http/helpers"
 )
+
+var RollBarEnabled = false
 
 type ResponseWriter struct {
 	http.ResponseWriter
@@ -26,6 +29,11 @@ func LogRequests(handler http.Handler) http.Handler {
 			Status:         http.StatusOK,
 		}
 		handler.ServeHTTP(nw, r)
+		if RollBarEnabled {
+			if !(nw.Status == http.StatusOK || nw.Status == http.StatusNotFound) {
+				rollbar.Error(r, nw)
+			}
+		}
 		log.Printf(
 			"\"%s\" \"%s %s\" %d \"%.3f ms\"\n",
 			helpers.ClientIP(r), r.Method, r.URL, nw.Status, time.Since(start).Seconds(),
