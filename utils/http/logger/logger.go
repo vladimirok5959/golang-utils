@@ -19,7 +19,10 @@ type ResponseWriter struct {
 
 func (w *ResponseWriter) Write(b []byte) (int, error) {
 	if RollBarEnabled {
-		if !(w.Status == http.StatusOK || w.Status == http.StatusNotFound) {
+		if !(w.Status == http.StatusOK ||
+			w.Status == http.StatusTemporaryRedirect ||
+			w.Status == http.StatusNotFound ||
+			w.Status == http.StatusMethodNotAllowed) {
 			w.Content = append(w.Content, b...)
 		}
 	}
@@ -41,7 +44,10 @@ func LogRequests(handler http.Handler) http.Handler {
 		}
 		handler.ServeHTTP(nw, r)
 		if RollBarEnabled {
-			if !(nw.Status == http.StatusOK || nw.Status == http.StatusNotFound) {
+			if !(nw.Status == http.StatusOK ||
+				nw.Status == http.StatusTemporaryRedirect ||
+				nw.Status == http.StatusNotFound ||
+				nw.Status == http.StatusMethodNotAllowed) {
 				rollbar.Error(r, string(nw.Content))
 			}
 		}
