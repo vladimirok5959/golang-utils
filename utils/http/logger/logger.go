@@ -34,6 +34,13 @@ func (w *ResponseWriter) WriteHeader(status int) {
 	w.ResponseWriter.WriteHeader(status)
 }
 
+func LogInternalError(err error) {
+	log.Printf("%s\n", err.Error())
+	if RollBarEnabled {
+		rollbar.Error(err)
+	}
+}
+
 func LogRequests(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
@@ -43,6 +50,10 @@ func LogRequests(handler http.Handler) http.Handler {
 			Status:         http.StatusOK,
 		}
 		handler.ServeHTTP(nw, r)
+		log.Printf(
+			"\"%s\" \"%s %s\" %d \"%.3f ms\"\n",
+			helpers.ClientIP(r), r.Method, r.URL, nw.Status, time.Since(start).Seconds(),
+		)
 		if RollBarEnabled {
 			if !(nw.Status == http.StatusOK ||
 				nw.Status == http.StatusTemporaryRedirect ||
@@ -51,9 +62,5 @@ func LogRequests(handler http.Handler) http.Handler {
 				rollbar.Error(r, string(nw.Content))
 			}
 		}
-		log.Printf(
-			"\"%s\" \"%s %s\" %d \"%.3f ms\"\n",
-			helpers.ClientIP(r), r.Method, r.URL, nw.Status, time.Since(start).Seconds(),
-		)
 	})
 }
