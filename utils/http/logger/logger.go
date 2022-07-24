@@ -13,12 +13,22 @@ var RollBarEnabled = false
 
 type ResponseWriter struct {
 	http.ResponseWriter
-	Status int
+	Content []byte
+	Status  int
 }
 
-func (r *ResponseWriter) WriteHeader(status int) {
-	r.Status = status
-	r.ResponseWriter.WriteHeader(status)
+func (w *ResponseWriter) Write(b []byte) (int, error) {
+	if RollBarEnabled {
+		if !(w.Status == http.StatusOK || w.Status == http.StatusNotFound) {
+			w.Content = append(w.Content, b...)
+		}
+	}
+	return w.ResponseWriter.Write(b)
+}
+
+func (w *ResponseWriter) WriteHeader(status int) {
+	w.Status = status
+	w.ResponseWriter.WriteHeader(status)
 }
 
 func LogRequests(handler http.Handler) http.Handler {
@@ -26,12 +36,13 @@ func LogRequests(handler http.Handler) http.Handler {
 		start := time.Now()
 		nw := &ResponseWriter{
 			ResponseWriter: w,
+			Content:        []byte{},
 			Status:         http.StatusOK,
 		}
 		handler.ServeHTTP(nw, r)
 		if RollBarEnabled {
 			if !(nw.Status == http.StatusOK || nw.Status == http.StatusNotFound) {
-				rollbar.Error(r, nw)
+				rollbar.Error(r, string(nw.Content))
 			}
 		}
 		log.Printf(
