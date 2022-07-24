@@ -20,6 +20,7 @@ type ResponseWriter struct {
 func (w *ResponseWriter) Write(b []byte) (int, error) {
 	if RollBarEnabled {
 		if !(w.Status == http.StatusOK ||
+			w.Status == http.StatusNotModified ||
 			w.Status == http.StatusTemporaryRedirect ||
 			w.Status == http.StatusNotFound ||
 			w.Status == http.StatusMethodNotAllowed) {
@@ -56,6 +57,7 @@ func LogRequests(handler http.Handler) http.Handler {
 		)
 		if RollBarEnabled {
 			if !(nw.Status == http.StatusOK ||
+				nw.Status == http.StatusNotModified ||
 				nw.Status == http.StatusTemporaryRedirect ||
 				nw.Status == http.StatusNotFound ||
 				nw.Status == http.StatusMethodNotAllowed) {
