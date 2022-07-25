@@ -375,6 +375,25 @@ var _ = Describe("helpers", func() {
 			`)).To(Equal(`<div><b>Contacts:</b> <a href="#">Link 1</a>, <a href="#">Link 2</a></div>`))
 		})
 	})
+
+	Context("FakeResponseWriter", func() {
+		It("write data to fake response writer", func() {
+			var someHandleFunc = func(w http.ResponseWriter) {
+				w.Header().Set("Content-Type", "application/json")
+				w.WriteHeader(http.StatusNotFound)
+				_, _ = w.Write([]byte("body"))
+			}
+
+			writer := helpers.NewFakeResponseWriter()
+			someHandleFunc(writer)
+
+			Expect(writer.Body).To(Equal([]byte("body")))
+			Expect(writer.Headers).To(Equal(http.Header{
+				"Content-Type": []string{"application/json"},
+			}))
+			Expect(writer.StatusCode).To(Equal(http.StatusNotFound))
+		})
+	})
 })
 
 func TestSuite(t *testing.T) {

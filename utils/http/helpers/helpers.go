@@ -228,3 +228,38 @@ func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error {
 	}
 	return nil
 }
+
+// -----------------------------------------------------------------------------
+
+// For funcs which write some data to http.ResponseWriter
+//
+// Example: w = NewFakeResponseWriter()
+//
+// w.Body, w.Headers, w.StatusCode
+type FakeResponseWriter struct {
+	Body       []byte
+	Headers    http.Header
+	StatusCode int
+}
+
+func (w *FakeResponseWriter) Header() http.Header {
+	return w.Headers
+}
+
+func (w *FakeResponseWriter) Write(b []byte) (int, error) {
+	w.Body = append(w.Body, b...)
+	return len(b), nil
+}
+
+func (w *FakeResponseWriter) WriteHeader(statusCode int) {
+	w.StatusCode = statusCode
+}
+
+// Create fake http.ResponseWriter for using in tests
+func NewFakeResponseWriter() *FakeResponseWriter {
+	return &FakeResponseWriter{
+		Body:       []byte{},
+		Headers:    http.Header{},
+		StatusCode: http.StatusOK,
+	}
+}
