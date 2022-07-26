@@ -11,7 +11,7 @@ type ResponseWriter struct {
 
 func (w *ResponseWriter) Write(b []byte) (int, error) {
 	if RollBarEnabled {
-		if !RollBarSkipStatusCodes.Contain(w.Status) {
+		if !RollBarSkipStatusCodes.contain(w.Status) {
 			w.Content = append(w.Content, b...)
 		}
 	}

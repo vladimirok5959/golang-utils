@@ -14,7 +14,7 @@ var RollBarSkipStatusCodes = RollBarStatusCodes{
 	http.StatusMethodNotAllowed,
 }
 
-func (r RollBarStatusCodes) Contain(status int) bool {
+func (r RollBarStatusCodes) contain(status int) bool {
 	for _, v := range r {
 		if v == status {
 			return true

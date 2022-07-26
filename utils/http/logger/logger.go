@@ -42,7 +42,7 @@ func LogRequests(handler http.Handler) http.Handler {
 			ua,
 		)
 		if RollBarEnabled {
-			if !RollBarSkipStatusCodes.Contain(nw.Status) {
+			if !RollBarSkipStatusCodes.contain(nw.Status) {
 				rollbar.Error(r, nw.Status, nw.Size, string(nw.Content))
 			}
 		}
