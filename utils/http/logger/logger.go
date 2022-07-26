@@ -1,14 +1,32 @@
 package logger
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/rollbar/rollbar-go"
 	"github.com/vladimirok5959/golang-utils/utils/http/helpers"
 )
+
+var AccessLogFile = ""
+var ErrorLogFile = ""
+
+func appendToLogFile(fileName, msg string) error {
+	flags := os.O_RDWR | os.O_CREATE | os.O_APPEND
+	f, err := os.OpenFile(fileName, flags, 0666)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	if _, err := fmt.Fprintln(f, msg); err != nil {
+		return err
+	}
+	return nil
+}
 
 func LogInternalError(err error) {
 	log.Printf("%s\n", err.Error())
@@ -31,7 +49,7 @@ func LogRequests(handler http.Handler) http.Handler {
 		if ua == "" || len(ua) > 256 {
 			ua = "-"
 		}
-		log.Printf(
+		msg := fmt.Sprintf(
 			"\"%s\" \"%s %s\" %d %d \"%.3f ms\" \"%s\"\n",
 			strings.Join(helpers.ClientIPs(r), ", "),
 			r.Method,
@@ -41,6 +59,22 @@ func LogRequests(handler http.Handler) http.Handler {
 			time.Since(start).Seconds(),
 			ua,
 		)
+		log.Printf("%s", msg)
+
+		if nw.Status < 400 {
+			if AccessLogFile != "" {
+				if err := appendToLogFile(AccessLogFile, msg); err != nil {
+					log.Printf("%s\n", err.Error())
+				}
+			}
+		} else {
+			if ErrorLogFile != "" {
+				if err := appendToLogFile(ErrorLogFile, msg); err != nil {
+					log.Printf("%s\n", err.Error())
+				}
+			}
+		}
+
 		if RollBarEnabled && !RollBarSkipStatusCodes.contain(nw.Status) {
 			if !RollBarSkipErrors.contain(string(nw.Content)) {
 				rollbar.Error(r, nw.Status, nw.Size, string(nw.Content))
