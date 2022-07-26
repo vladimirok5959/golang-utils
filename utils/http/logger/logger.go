@@ -12,7 +12,7 @@ import (
 
 func LogInternalError(err error) {
 	log.Printf("%s\n", err.Error())
-	if RollBarEnabled {
+	if RollBarEnabled && !RollBarSkipErrors.contain(err.Error()) {
 		rollbar.Error(err)
 	}
 }
@@ -42,7 +42,9 @@ func LogRequests(handler http.Handler) http.Handler {
 			ua,
 		)
 		if RollBarEnabled && !RollBarSkipStatusCodes.contain(nw.Status) {
-			rollbar.Error(r, nw.Status, nw.Size, string(nw.Content))
+			if !RollBarSkipErrors.contain(string(nw.Content)) {
+				rollbar.Error(r, nw.Status, nw.Size, string(nw.Content))
+			}
 		}
 	})
 }
