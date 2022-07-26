@@ -22,7 +22,7 @@ func appendToLogFile(fileName, msg string) error {
 		return err
 	}
 	defer f.Close()
-	if _, err := fmt.Fprintln(f, msg); err != nil {
+	if _, err := fmt.Fprint(f, msg); err != nil {
 		return err
 	}
 	return nil
