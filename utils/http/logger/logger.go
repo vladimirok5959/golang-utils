@@ -10,8 +10,6 @@ import (
 	"github.com/vladimirok5959/golang-utils/utils/http/helpers"
 )
 
-var RollBarEnabled = false
-
 type ResponseWriter struct {
 	http.ResponseWriter
 	Content []byte
@@ -21,11 +19,7 @@ type ResponseWriter struct {
 
 func (w *ResponseWriter) Write(b []byte) (int, error) {
 	if RollBarEnabled {
-		if !(w.Status == http.StatusOK ||
-			w.Status == http.StatusNotModified ||
-			w.Status == http.StatusTemporaryRedirect ||
-			w.Status == http.StatusNotFound ||
-			w.Status == http.StatusMethodNotAllowed) {
+		if !RollBarSkipStatusCodes.Contain(w.Status) {
 			w.Content = append(w.Content, b...)
 		}
 	}
@@ -71,12 +65,8 @@ func LogRequests(handler http.Handler) http.Handler {
 			ua,
 		)
 		if RollBarEnabled {
-			if !(nw.Status == http.StatusOK ||
-				nw.Status == http.StatusNotModified ||
-				nw.Status == http.StatusTemporaryRedirect ||
-				nw.Status == http.StatusNotFound ||
-				nw.Status == http.StatusMethodNotAllowed) {
-				rollbar.Error(r, string(nw.Content))
+			if !RollBarSkipStatusCodes.Contain(nw.Status) {
+				rollbar.Error(r, nw.Status, nw.Size, string(nw.Content))
 			}
 		}
 	})
