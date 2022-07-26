@@ -63,13 +63,13 @@ func LogRequests(handler http.Handler) http.Handler {
 
 		if nw.Status < 400 {
 			if AccessLogFile != "" {
-				if err := appendToLogFile(AccessLogFile, msg); err != nil {
+				if err := appendToLogFile(AccessLogFile, start.Format(time.RFC3339)+" "+msg); err != nil {
 					log.Printf("%s\n", err.Error())
 				}
 			}
 		} else {
 			if ErrorLogFile != "" {
-				if err := appendToLogFile(ErrorLogFile, msg); err != nil {
+				if err := appendToLogFile(ErrorLogFile, start.Format(time.RFC3339)+" "+msg); err != nil {
 					log.Printf("%s\n", err.Error())
 				}
 			}
