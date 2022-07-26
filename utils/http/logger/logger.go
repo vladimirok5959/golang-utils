@@ -3,6 +3,7 @@ package logger
 import (
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/rollbar/rollbar-go"
@@ -14,6 +15,7 @@ var RollBarEnabled = false
 type ResponseWriter struct {
 	http.ResponseWriter
 	Content []byte
+	Size    int
 	Status  int
 }
 
@@ -27,7 +29,9 @@ func (w *ResponseWriter) Write(b []byte) (int, error) {
 			w.Content = append(w.Content, b...)
 		}
 	}
-	return w.ResponseWriter.Write(b)
+	size, err := w.ResponseWriter.Write(b)
+	w.Size += size
+	return size, err
 }
 
 func (w *ResponseWriter) WriteHeader(status int) {
@@ -48,12 +52,23 @@ func LogRequests(handler http.Handler) http.Handler {
 		nw := &ResponseWriter{
 			ResponseWriter: w,
 			Content:        []byte{},
+			Size:           0,
 			Status:         http.StatusOK,
 		}
 		handler.ServeHTTP(nw, r)
+		ua := strings.TrimSpace(r.Header.Get("User-Agent"))
+		if ua == "" || len(ua) > 256 {
+			ua = "-"
+		}
 		log.Printf(
-			"\"%s\" \"%s %s\" %d \"%.3f ms\"\n",
-			helpers.ClientIP(r), r.Method, r.URL, nw.Status, time.Since(start).Seconds(),
+			"\"%s\" \"%s %s\" %d %d \"%.3f ms\" \"%s\"\n",
+			strings.Join(helpers.ClientIPs(r), ", "),
+			r.Method,
+			r.URL,
+			nw.Status,
+			nw.Size,
+			time.Since(start).Seconds(),
+			ua,
 		)
 		if RollBarEnabled {
 			if !(nw.Status == http.StatusOK ||
