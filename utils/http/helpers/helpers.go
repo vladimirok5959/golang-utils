@@ -151,11 +151,11 @@ func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 
-		type respRoot struct {
+		type Resp struct {
 			Error string `json:"error"`
 		}
 
-		resp := respRoot{
+		resp := Resp{
 			Error: err.Error(),
 		}
 
