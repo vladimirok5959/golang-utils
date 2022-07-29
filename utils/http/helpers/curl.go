@@ -9,23 +9,23 @@ import (
 )
 
 var (
-	ErrCurlGetStatus = errCurlGetStatus(0, 0)
+	ErrCurlGetStatus = error(&CurlGetStatusError{})
 )
 
-func errCurlGetStatus(e, r int) error {
-	return &curlGetStatusError{
-		expected: e,
-		received: r,
+type CurlGetStatusError struct {
+	Expected int
+	Received int
+}
+
+func (e *CurlGetStatusError) Is(err error) bool {
+	if _, ok := err.(*CurlGetStatusError); !ok {
+		return false
 	}
+	return true
 }
 
-type curlGetStatusError struct {
-	expected int
-	received int
-}
-
-func (c *curlGetStatusError) Error() string {
-	return fmt.Sprintf("CurlGet: expected %d, received %d", c.received, c.expected)
+func (e *CurlGetStatusError) Error() string {
+	return fmt.Sprintf("CurlGet: expected %d, received %d", e.Expected, e.Received)
 }
 
 func CurlGet(ctx context.Context, url string, timeout time.Duration) ([]byte, error) {
@@ -48,10 +48,10 @@ func CurlGet(ctx context.Context, url string, timeout time.Duration) ([]byte, er
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return b, errCurlGetStatus(
-			http.StatusOK,
-			resp.StatusCode,
-		)
+		return b, error(&CurlGetStatusError{
+			Expected: http.StatusOK,
+			Received: resp.StatusCode,
+		})
 	}
 
 	b, err = io.ReadAll(resp.Body)

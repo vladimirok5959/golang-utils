@@ -1,8 +1,10 @@
 package helpers_test
 
 import (
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -13,6 +15,26 @@ import (
 )
 
 var _ = Describe("helpers", func() {
+	Context("CurlGetStatusError", func() {
+		It("recognize error", func() {
+			err := error(&helpers.CurlGetStatusError{Expected: http.StatusOK, Received: http.StatusServiceUnavailable})
+			Expect(errors.Is(err, helpers.ErrCurlGetStatus)).To(BeTrue())
+
+			err = error(&helpers.CurlGetStatusError{Expected: http.StatusOK, Received: http.StatusBadGateway})
+			Expect(errors.Is(err, helpers.ErrCurlGetStatus)).To(BeTrue())
+
+			err = fmt.Errorf("Some error")
+			Expect(errors.Is(err, helpers.ErrCurlGetStatus)).To(BeFalse())
+
+			Expect(errors.Is(fs.ErrNotExist, helpers.ErrCurlGetStatus)).To(BeFalse())
+		})
+
+		It("generate error message", func() {
+			err := error(&helpers.CurlGetStatusError{Expected: http.StatusOK, Received: http.StatusBadGateway})
+			Expect(err.Error()).To(Equal("CurlGet: expected 200, received 502"))
+		})
+	})
+
 	Context("ClientIP", func() {
 		It("return client IP", func() {
 			Expect(helpers.ClientIP(&http.Request{
