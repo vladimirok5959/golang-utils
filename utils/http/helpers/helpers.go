@@ -217,7 +217,7 @@ func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error {
 	if c, err := r.Cookie("lang"); err == nil {
 		clang = c.Value
 	}
-	lang := r.Form.Get("lang")
+	lang := r.FormValue("lang")
 	if lang != "" && lang != clang {
 		http.SetCookie(w, &http.Cookie{
 			Expires:  time.Now().Add(365 * 24 * time.Hour),
