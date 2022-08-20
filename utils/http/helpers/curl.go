@@ -37,6 +37,30 @@ func (e *CurlGetStatusError) Error() string {
 	return fmt.Sprintf("CurlGet: expected %d, received %d", e.Expected, e.Received)
 }
 
+func CurlDownload(ctx context.Context, url string, opts *CurlGetOpts, fileName string, filePath ...string) error {
+	dir := strings.Join(filePath, string(os.PathSeparator))
+	f := strings.Join([]string{dir, fileName}, string(os.PathSeparator))
+
+	if _, err := os.Stat(f); !errors.Is(err, os.ErrNotExist) {
+		return os.ErrExist
+	}
+
+	var (
+		b   []byte
+		err error
+	)
+
+	if b, err = CurlGet(ctx, url, opts); err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		return err
+	}
+
+	return os.WriteFile(f, b, 0644)
+}
+
 func CurlGet(ctx context.Context, url string, opts *CurlGetOpts) ([]byte, error) {
 	if opts == nil {
 		opts = &CurlGetOpts{
@@ -80,28 +104,4 @@ func CurlGet(ctx context.Context, url string, opts *CurlGetOpts) ([]byte, error)
 	}
 
 	return b, nil
-}
-
-func CurlGetFile(ctx context.Context, url string, opts *CurlGetOpts, fileName string, filePath ...string) error {
-	dir := strings.Join(filePath, string(os.PathSeparator))
-	f := strings.Join([]string{dir, fileName}, string(os.PathSeparator))
-
-	if _, err := os.Stat(f); !errors.Is(err, os.ErrNotExist) {
-		return os.ErrExist
-	}
-
-	var (
-		b   []byte
-		err error
-	)
-
-	if b, err = CurlGet(ctx, url, opts); err != nil {
-		return err
-	}
-
-	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
-		return err
-	}
-
-	return os.WriteFile(f, b, 0644)
 }
