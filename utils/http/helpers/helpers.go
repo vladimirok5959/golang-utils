@@ -1,6 +1,8 @@
 package helpers
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"log"
@@ -24,6 +26,7 @@ import (
 // func HandleTextJavaScript(data string) http.Handler
 // func HandleTextPlain(data string) http.Handler
 // func HandleTextXml(data string) http.Handler
+// func Md5Hash(str []byte) string
 // func MinifyHtmlCode(str string) string
 // func MinifyHtmlJsCode(str string) string
 // func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error)
@@ -145,6 +148,14 @@ func HandleTextPlain(data string) http.Handler {
 
 func HandleTextXml(data string) http.Handler {
 	return HandleFile(data, "text/xml")
+}
+
+func Md5Hash(str []byte) string {
+	h := md5.New()
+	if _, err := h.Write(str); err != nil {
+		return ""
+	}
+	return hex.EncodeToString(h.Sum(nil))
 }
 
 func MinifyHtmlCode(str string) string {
