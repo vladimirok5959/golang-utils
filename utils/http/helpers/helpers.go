@@ -25,6 +25,7 @@ import (
 // func HandleTextPlain(data string) http.Handler
 // func HandleTextXml(data string) http.Handler
 // func MinifyHtmlCode(str string) string
+// func MinifyHtmlJsCode(str string) string
 // func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error)
 // func RespondAsInternalServerError(w http.ResponseWriter, r *http.Request)
 // func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
@@ -147,22 +148,25 @@ func HandleTextXml(data string) http.Handler {
 }
 
 func MinifyHtmlCode(str string) string {
-	str = mScript.ReplaceAllStringFunc(str, func(m string) string {
-		s := m
-		s = strings.TrimPrefix(s, "<script>")
-		s = strings.TrimSuffix(s, "</script>")
-		s = mScriptCommentsInline.ReplaceAllString(s, "")
-		s = mScriptCommentsMultiline.ReplaceAllString(s, "")
-		s = mScriptLine.ReplaceAllString(s, "")
-		s = mScriptEqual.ReplaceAllString(s, "=")
-		s = mScriptDots.ReplaceAllString(s, ":\"")
-		s = mScriptFuncs.ReplaceAllString(s, "){")
-		return `<script>` + s + `</script>`
-	})
+	str = MinifyHtmlJsCode(str)
 	str = mHtml.ReplaceAllString(str, "><")
 	str = mHtmlLeft.ReplaceAllString(str, ">")
 	str = mHtmlRight.ReplaceAllString(str, "<")
 	return str
+}
+
+func MinifyHtmlJsCode(str string) string {
+	return mScript.ReplaceAllStringFunc(str, func(str string) string {
+		str = strings.TrimPrefix(str, "<script>")
+		str = strings.TrimSuffix(str, "</script>")
+		str = mScriptCommentsInline.ReplaceAllString(str, "")
+		str = mScriptCommentsMultiline.ReplaceAllString(str, "")
+		str = mScriptLine.ReplaceAllString(str, "")
+		str = mScriptEqual.ReplaceAllString(str, "=")
+		str = mScriptDots.ReplaceAllString(str, ":\"")
+		str = mScriptFuncs.ReplaceAllString(str, "){")
+		return `<script>` + str + `</script>`
+	})
 }
 
 func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error) {
