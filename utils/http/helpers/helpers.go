@@ -36,9 +36,12 @@ var mHtmlLeft = regexp.MustCompile(`>[\n\t\r]+`)
 var mHtmlRight = regexp.MustCompile(`[\n\t\r]+<`)
 
 var mScript = regexp.MustCompile(`<script>([^<]*)</script>`)
+var mScriptCommentsInline = regexp.MustCompile(`//.*\n`)
+var mScriptCommentsMultiline = regexp.MustCompile(`/\*[^*]*\*/`)
 var mScriptLine = regexp.MustCompile(`[\n\t\r]+`)
 var mScriptEqual = regexp.MustCompile(`[\n\t\r\s]+=[\n\t\r\s]+`)
 var mScriptDots = regexp.MustCompile(`:[\n\t\r\s]+"`)
+var mScriptFuncs = regexp.MustCompile(`\)[\n\t\r\s]+{`)
 
 func ClientIP(r *http.Request) string {
 	ips := ClientIPs(r)
@@ -146,9 +149,12 @@ func HandleTextXml(data string) http.Handler {
 func MinifyHtmlCode(str string) string {
 	str = mScript.ReplaceAllStringFunc(str, func(m string) string {
 		s := strings.TrimSuffix(strings.TrimPrefix(m, "<script>"), "</script>")
+		s = mScriptCommentsInline.ReplaceAllString(s, "")
+		s = mScriptCommentsMultiline.ReplaceAllString(s, "")
 		s = mScriptLine.ReplaceAllString(s, "")
 		s = mScriptEqual.ReplaceAllString(s, "=")
 		s = mScriptDots.ReplaceAllString(s, ":\"")
+		s = mScriptFuncs.ReplaceAllString(s, "){")
 		return `<script>` + s + `</script>`
 	})
 	str = mHtml.ReplaceAllString(str, "><")

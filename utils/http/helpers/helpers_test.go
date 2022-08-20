@@ -378,9 +378,20 @@ var _ = Describe("helpers", func() {
 					<head>
 						<meta charset="utf-8" />
 						<script>
+							// Comment
 							var LangTexts = {
 								"empty": "Empty",
 								"full": "Full"
+							};
+
+							/* Comment */
+
+							/*
+								Comment line 1
+								Comment line 2
+							*/
+							function Func(value) {
+								console.log(value);
 							};
 						</script>
 					</head>
@@ -388,7 +399,7 @@ var _ = Describe("helpers", func() {
 						Index
 					</body>
 				</html>
-			`)).To(Equal(`<!doctype html><html lang="uk"><head><meta charset="utf-8" /><script>var LangTexts={"empty":"Empty","full":"Full"};</script></head><body>Index</body></html>`))
+			`)).To(Equal(`<!doctype html><html lang="uk"><head><meta charset="utf-8" /><script>var LangTexts={"empty":"Empty","full":"Full"};function Func(value){console.log(value);};</script></head><body>Index</body></html>`))
 
 			Expect(helpers.MinifyHtmlCode(`
 				<div>
