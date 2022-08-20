@@ -34,6 +34,7 @@ import (
 var mHtml = regexp.MustCompile(`>[\n\t\r]+<`)
 var mHtmlLeft = regexp.MustCompile(`>[\n\t\r]+`)
 var mHtmlRight = regexp.MustCompile(`[\n\t\r]+<`)
+
 var mScript = regexp.MustCompile(`<script>([^<]*)</script>`)
 var mScriptLine = regexp.MustCompile(`[\n\t\r]+`)
 var mScriptEqual = regexp.MustCompile(`[\n\t\r\s]+=[\n\t\r\s]+`)
