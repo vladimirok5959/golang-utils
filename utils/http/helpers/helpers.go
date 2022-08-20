@@ -34,6 +34,10 @@ import (
 var mHtml = regexp.MustCompile(`>[\n\t\r]+<`)
 var mHtmlLeft = regexp.MustCompile(`>[\n\t\r]+`)
 var mHtmlRight = regexp.MustCompile(`[\n\t\r]+<`)
+var mScript = regexp.MustCompile(`<script>([^<]*)</script>`)
+var mScriptLine = regexp.MustCompile(`[\n\t\r]+`)
+var mScriptEqual = regexp.MustCompile(`[\n\t\r\s]+=[\n\t\r\s]+`)
+var mScriptDots = regexp.MustCompile(`:[\n\t\r\s]+"`)
 
 func ClientIP(r *http.Request) string {
 	ips := ClientIPs(r)
@@ -139,6 +143,13 @@ func HandleTextXml(data string) http.Handler {
 }
 
 func MinifyHtmlCode(str string) string {
+	str = mScript.ReplaceAllStringFunc(str, func(m string) string {
+		s := strings.TrimSuffix(strings.TrimPrefix(m, "<script>"), "</script>")
+		s = mScriptLine.ReplaceAllString(s, "")
+		s = mScriptEqual.ReplaceAllString(s, "=")
+		s = mScriptDots.ReplaceAllString(s, ":\"")
+		return `<script>` + s + `</script>`
+	})
 	str = mHtml.ReplaceAllString(str, "><")
 	str = mHtmlLeft.ReplaceAllString(str, ">")
 	str = mHtmlRight.ReplaceAllString(str, "<")
@@ -188,7 +199,7 @@ func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request) {
 // if err != nil && !errors.Is(err, os.ErrNotExist) {
 //
 //	helpers.RespondAsBadRequest(w, r, err)
-// 	return
+//	return
 //
 // }
 //
@@ -203,15 +214,15 @@ func SessionStart(w http.ResponseWriter, r *http.Request) (*session.Session, err
 
 // Example:
 //
-// if err = r.ParseForm(); err != nil {
-// 	helpers.RespondAsBadRequest(w, r, err)
-// 	return
-// }
+//	if err = r.ParseForm(); err != nil {
+//		helpers.RespondAsBadRequest(w, r, err)
+//		return
+//	}
 //
-// if err = helpers.SetLanguageCookie(w, r); err != nil {
-// 		helpers.RespondAsBadRequest(w, r, err)
-// 		return
-// }
+//	if err = helpers.SetLanguageCookie(w, r); err != nil {
+//		helpers.RespondAsBadRequest(w, r, err)
+//		return
+//	}
 func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error {
 	var clang string
 	if c, err := r.Cookie("lang"); err == nil {

@@ -377,12 +377,18 @@ var _ = Describe("helpers", func() {
 				<html lang="uk">
 					<head>
 						<meta charset="utf-8" />
+						<script>
+							var LangTexts = {
+								"empty": "Empty",
+								"full": "Full"
+							};
+						</script>
 					</head>
 					<body>
 						Index
 					</body>
 				</html>
-			`)).To(Equal(`<!doctype html><html lang="uk"><head><meta charset="utf-8" /></head><body>Index</body></html>`))
+			`)).To(Equal(`<!doctype html><html lang="uk"><head><meta charset="utf-8" /><script>var LangTexts={"empty":"Empty","full":"Full"};</script></head><body>Index</body></html>`))
 
 			Expect(helpers.MinifyHtmlCode(`
 				<div>
