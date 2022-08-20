@@ -47,16 +47,16 @@ func CurlGet(ctx context.Context, url string, timeout time.Duration) ([]byte, er
 	}
 	defer resp.Body.Close()
 
+	b, err = io.ReadAll(resp.Body)
+	if err != nil {
+		return b, err
+	}
+
 	if resp.StatusCode != http.StatusOK {
 		return b, error(&CurlGetStatusError{
 			Expected: http.StatusOK,
 			Received: resp.StatusCode,
 		})
-	}
-
-	b, err = io.ReadAll(resp.Body)
-	if err != nil {
-		return b, err
 	}
 
 	return b, nil
