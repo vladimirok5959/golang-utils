@@ -148,7 +148,9 @@ func HandleTextXml(data string) http.Handler {
 
 func MinifyHtmlCode(str string) string {
 	str = mScript.ReplaceAllStringFunc(str, func(m string) string {
-		s := strings.TrimSuffix(strings.TrimPrefix(m, "<script>"), "</script>")
+		s := m
+		s = strings.TrimPrefix(s, "<script>")
+		s = strings.TrimSuffix(s, "</script>")
 		s = mScriptCommentsInline.ReplaceAllString(s, "")
 		s = mScriptCommentsMultiline.ReplaceAllString(s, "")
 		s = mScriptLine.ReplaceAllString(s, "")
