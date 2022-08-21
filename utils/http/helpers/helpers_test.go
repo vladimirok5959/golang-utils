@@ -291,6 +291,16 @@ var _ = Describe("helpers", func() {
 			})
 		})
 
+		Context("IntToStr", func() {
+			It("convert int to string", func() {
+				Expect(helpers.IntToStr(1)).To(Equal("1"))
+				Expect(helpers.IntToStr(5)).To(Equal("5"))
+				Expect(helpers.IntToStr(50)).To(Equal("50"))
+				Expect(helpers.IntToStr(100)).To(Equal("100"))
+				Expect(helpers.IntToStr(1000)).To(Equal("1000"))
+			})
+		})
+
 		Context("RespondAsBadRequest", func() {
 			BeforeEach(func() {
 				var handler = func() http.HandlerFunc {

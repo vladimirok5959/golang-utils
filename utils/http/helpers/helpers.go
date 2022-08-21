@@ -10,6 +10,7 @@ import (
 	"os"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 
@@ -26,6 +27,7 @@ import (
 // func HandleTextJavaScript(data string) http.Handler
 // func HandleTextPlain(data string) http.Handler
 // func HandleTextXml(data string) http.Handler
+// func IntToStr(value int64) string
 // func Md5Hash(str []byte) string
 // func MinifyHtmlCode(str string) string
 // func MinifyHtmlJsCode(str string) string
@@ -148,6 +150,10 @@ func HandleTextPlain(data string) http.Handler {
 
 func HandleTextXml(data string) http.Handler {
 	return HandleFile(data, "text/xml")
+}
+
+func IntToStr(value int64) string {
+	return strconv.FormatInt(value, 10)
 }
 
 func Md5Hash(str []byte) string {
