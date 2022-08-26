@@ -115,9 +115,9 @@ func (s ServeMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 					mParams.Lock()
 					for _, p := range rs[0] {
 						if _, ok := mParams.list[r]; !ok {
-							mParams.list[r] = []Param{{value: p}}
+							mParams.list[r] = []Param{{Value: p}}
 						} else {
-							mParams.list[r] = append(mParams.list[r], Param{value: p})
+							mParams.list[r] = append(mParams.list[r], Param{Value: p})
 						}
 						select {
 						case <-r.Context().Done():
