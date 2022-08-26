@@ -9,6 +9,7 @@ import (
 )
 
 var mParam = regexp.MustCompile(`\{([^/]*)}`)
+var TestingMockParams func() []Param = nil
 
 var mParams = &Params{
 	list: map[*http.Request][]Param{},
@@ -28,6 +29,9 @@ func NewServeMux() *ServeMux {
 }
 
 func GetParams(r *http.Request) []Param {
+	if TestingMockParams != nil {
+		return TestingMockParams()
+	}
 	mParams.Lock()
 	defer mParams.Unlock()
 	if v, ok := mParams.list[r]; ok {
