@@ -10,11 +10,12 @@ var RollBarEnabled = false
 type RollBarStatusCodes []int
 
 var RollBarSkipStatusCodes = RollBarStatusCodes{
-	http.StatusOK,
-	http.StatusNotModified,
-	http.StatusTemporaryRedirect,
-	http.StatusNotFound,
+	http.StatusForbidden,
 	http.StatusMethodNotAllowed,
+	http.StatusNotFound,
+	http.StatusNotModified,
+	http.StatusOK,
+	http.StatusTemporaryRedirect,
 }
 
 func (r RollBarStatusCodes) contain(status int) bool {
