@@ -1,12 +1,24 @@
 package logger
 
-import "net/http"
+import (
+	"bufio"
+	"errors"
+	"net"
+	"net/http"
+)
 
 type ResponseWriter struct {
 	http.ResponseWriter
 	Content []byte
 	Size    int
 	Status  int
+}
+
+func (w *ResponseWriter) Hijack() (net.Conn, *bufio.ReadWriter, error) {
+	if h, ok := w.ResponseWriter.(http.Hijacker); ok {
+		return h.Hijack()
+	}
+	return nil, nil, errors.New("hijack not supported")
 }
 
 func (w *ResponseWriter) Write(b []byte) (int, error) {
