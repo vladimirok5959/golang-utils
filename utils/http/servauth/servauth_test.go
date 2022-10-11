@@ -26,7 +26,7 @@ var _ = Describe("servauth", func() {
 		}
 
 		BeforeEach(func() {
-			srv = httptest.NewServer(servauth.BasicAuth(getTestHandler(), "user", "pass", ""))
+			srv = httptest.NewServer(servauth.BasicAuth(getTestHandler(), "user", "pass", "msg"))
 			client = srv.Client()
 		})
 
@@ -40,6 +40,7 @@ var _ = Describe("servauth", func() {
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
+			Expect(resp.Header["Www-Authenticate"]).To(Equal([]string{`Basic realm="msg"`}))
 
 			body, err := io.ReadAll(resp.Body)
 			Expect(err).To(Succeed())

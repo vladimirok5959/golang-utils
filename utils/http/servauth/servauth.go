@@ -13,8 +13,8 @@ func BasicAuth(handler http.Handler, username, password, realm string) http.Hand
 
 		u, p, ok := r.BasicAuth()
 		if !ok {
-			w.WriteHeader(401)
 			w.Header().Set("WWW-Authenticate", `Basic realm="`+realm+`"`)
+			w.WriteHeader(401)
 			if _, err := w.Write([]byte("Unauthorised\n")); err != nil {
 				log.Printf("%s\n", err.Error())
 			}
@@ -22,8 +22,8 @@ func BasicAuth(handler http.Handler, username, password, realm string) http.Hand
 		}
 
 		if u != username {
-			w.WriteHeader(401)
 			w.Header().Set("WWW-Authenticate", `Basic realm="`+realm+`"`)
+			w.WriteHeader(401)
 			if _, err := w.Write([]byte("Unauthorised\n")); err != nil {
 				log.Printf("%s\n", err.Error())
 			}
@@ -31,8 +31,8 @@ func BasicAuth(handler http.Handler, username, password, realm string) http.Hand
 		}
 
 		if p != password {
-			w.WriteHeader(401)
 			w.Header().Set("WWW-Authenticate", `Basic realm="`+realm+`"`)
+			w.WriteHeader(401)
 			if _, err := w.Write([]byte("Unauthorised\n")); err != nil {
 				log.Printf("%s\n", err.Error())
 			}
