@@ -28,6 +28,26 @@ func appendToLogFile(fileName, msg string) error {
 	return nil
 }
 
+func LogError(format string, a ...any) {
+	msg := fmt.Sprintf(format, a...)
+	log.Printf("%s", msg)
+	if ErrorLogFile != "" {
+		if err := appendToLogFile(ErrorLogFile, time.Now().Format("2006/01/02 15:04:05")+" "+msg); err != nil {
+			log.Printf("%s\n", err.Error())
+		}
+	}
+}
+
+func LogInfo(format string, a ...any) {
+	msg := fmt.Sprintf(format, a...)
+	log.Printf("%s", msg)
+	if AccessLogFile != "" {
+		if err := appendToLogFile(AccessLogFile, time.Now().Format("2006/01/02 15:04:05")+" "+msg); err != nil {
+			log.Printf("%s\n", err.Error())
+		}
+	}
+}
+
 func LogInternalError(err error) {
 	log.Printf("%s\n", err.Error())
 	if RollBarEnabled && !RollBarSkipErrors.contain(err.Error()) {
