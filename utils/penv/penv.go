@@ -12,6 +12,8 @@ import (
 	"golang.org/x/text/language"
 )
 
+const NoDescription = "No description"
+
 var Prefix = "ENV_"
 
 type DumpVar struct {
@@ -69,7 +71,7 @@ func DumpConfig(config any) map[string]DumpVar {
 		nameFlag := generateFlagName(t.Field(i).Name)
 		description := t.Field(i).Tag.Get("description")
 		if description == "" {
-			description = "No description"
+			description = NoDescription
 		}
 		secret := t.Field(i).Tag.Get("secret")
 		if fieldType == "string" {
@@ -112,7 +114,7 @@ func ProcessConfig(config any) error {
 	v := reflect.ValueOf(config).Elem()
 	t := v.Type()
 
-	// Process flags
+	// Flags
 	for i := 0; i < t.NumField(); i++ {
 		nameEnv := generateEnvName(t.Field(i).Name)
 		nameFlag := generateFlagName(t.Field(i).Name)
@@ -120,7 +122,7 @@ func ProcessConfig(config any) error {
 		defvalue := t.Field(i).Tag.Get("default")
 		description := t.Field(i).Tag.Get("description")
 		if description == "" {
-			description = "No description"
+			description = NoDescription
 		}
 
 		if fieldType == "string" {
@@ -144,7 +146,7 @@ func ProcessConfig(config any) error {
 	}
 	flag.Parse()
 
-	// Process ENVs
+	// ENVs
 	for i := 0; i < t.NumField(); i++ {
 		nameEnv := generateEnvName(t.Field(i).Name)
 		fieldType := t.Field(i).Type.Kind().String()
