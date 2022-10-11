@@ -110,6 +110,21 @@ func DumpConfig(config any) map[string]DumpVar {
 	return res
 }
 
+// ProcessConfig automaticaly read flags and ENVs to structure.
+//
+// config - must be a pointer to structure
+//
+//	var Config struct {
+//	  Deployment string `default:"development"`
+//	  Host       string `default:"127.0.0.1"`
+//	  Port       string `default:"8080"`
+//	}
+//
+//	func init() {
+//	  if err := penv.ProcessConfig(&Config); err != nil {
+//	    panic(err)
+//	  }
+//	}
 func ProcessConfig(config any) error {
 	v := reflect.ValueOf(config).Elem()
 	t := v.Type()
