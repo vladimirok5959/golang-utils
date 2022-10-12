@@ -51,6 +51,24 @@ func generateFlagName(name string) string {
 	return strings.ToLower(generate(name))
 }
 
+func isEnvPassed(name string) bool {
+	if _, ok := os.LookupEnv(name); ok {
+		return true
+	}
+	return false
+}
+
+func isFlagPassed(name string) bool {
+	res := false
+	flag.Visit(func(f *flag.Flag) {
+		if f.Name == name {
+			res = true
+			return
+		}
+	})
+	return res
+}
+
 func stringToInt(value string) (int, error) {
 	return strconv.Atoi(value)
 }
@@ -184,6 +202,18 @@ func ProcessConfig(config any) error {
 				} else {
 					return err
 				}
+			}
+		}
+	}
+
+	// Required
+	for i := 0; i < t.NumField(); i++ {
+		nameEnv := generateEnvName(t.Field(i).Name)
+		nameFlag := generateFlagName(t.Field(i).Name)
+		required := t.Field(i).Tag.Get("required")
+		if required == "1" || required == "true" {
+			if !(isEnvPassed(nameEnv) || isFlagPassed(nameFlag)) {
+				return fmt.Errorf("variable '" + nameEnv + "' or flag '" + nameFlag + "' is not set")
 			}
 		}
 	}
