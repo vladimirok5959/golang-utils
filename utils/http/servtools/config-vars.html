@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang=en>
+	<head>
+		<meta charset=utf-8>
+		<meta name=viewport content="width=device-width,initial-scale=1">
+		<title>Environment Variables</title>
+		<style>*,::before,::after{box-sizing:border-box}html{-ms-overflow-style:scrollbar;-ms-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0);-webkit-text-size-adjust:100%;font-family:sans-serif;line-height:1.15}body{background-color:#fff;color:#212529;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";font-size:1rem;font-weight:400;line-height:1.5;margin:0;text-align:left}[tabindex="-1"]:focus{outline:0!important}b{font-weight:bolder}small{font-size:80%}table{border-collapse:collapse}th{text-align:inherit}html{box-sizing:border-box;-ms-overflow-style:scrollbar}*,::before,::after{box-sizing:inherit}.container-fluid{width:100%;padding-right:15px;padding-left:15px;margin-right:auto;margin-left:auto}.row{display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;flex-wrap:wrap;margin-right:-15px;margin-left:-15px}.col-12{position:relative;width:100%;min-height:1px;padding-right:15px;padding-left:15px;-ms-flex:0 0 100%;flex:0 0 100%;max-width:100%}body{color:#1e375a;position:relative;background-color:#eee}.table{border:1px solid #dee2e6;color:#000;table-layout:fixed;vertical-align:top;width:100%}.table > :not(caption) > * > *{border-bottom-width:1px;padding:.5rem}.table > tbody{vertical-align:inherit}.table > thead{vertical-align:bottom}.table > thead,.table > tbody{display:block}.table tr{display:block}.table th,.table td{display:block}.table tr th,.table tr td{overflow:hidden;text-overflow:ellipsis;white-space:normal}.table thead tr{background-color:#e9ecef}.table tbody tr:nth-of-type(odd){background-color:rgba(0,0,0,.05)}.table tbody tr:hover{background-color:#fffbdf}@media (min-width: 576px){.table > thead{display:table-header-group}.table > tbody{display:table-row-group}.table tr{display:table-row}.table th,.table td{display:table-cell}.table tr th,.table tr td{white-space:nowrap}}.table tr.required td{color:#ed5757}</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-12">
+					<div style="padding:15px 0">
+						<table class="table">
+							<thead>
+								<tr>
+									<th>Variable</th>
+									<th>Value</th>
+								</tr>
+							</thead>
+							<tbody>
+								{{ if gt (len $.Data) 0 }}
+									{{range $key, $value := $.Data}}
+										<tr{{if $value.Required}} class="required"{{end}}>
+											<td>
+												<div>
+													<b>{{$value.NameFlag}}</b>
+												</div>
+												<div>
+													{{$value.NameEnv}}
+												</div>
+												<div>
+													<small>{{$value.Desc}}</small>
+												</div>
+											</td>
+											<td>
+												<div><b>{{$value.Type}}</b></div>
+												<div>
+													<span title="Current">
+														{{if $value.Secret}}
+															{{if ne $value.Value ""}}
+																{{secret $value.Value}}
+															{{else}}
+																{{secret "&mdash;"}}
+															{{end}}
+														{{else}}
+															{{if ne $value.Value ""}}
+																{{$value.Value}}
+															{{else}}
+																&mdash;
+															{{end}}
+														{{end}}
+													</span>
+												</div>
+												{{if $value.Required}}
+													<div>
+														<b><small>Required</small></b>
+													</div>
+												{{else}}
+													<div>
+														<span title="Default">
+															<small>
+																{{if $value.Secret}}
+																	{{if ne $value.Default ""}}
+																		{{secret $value.Default}}
+																	{{else}}
+																		{{secret "&mdash;"}}
+																	{{end}}
+																{{else}}
+																	{{if ne $value.Default ""}}
+																		{{$value.Default}}
+																	{{else}}
+																		&mdash;
+																	{{end}}
+																{{end}}
+															</small>
+														</span>
+													</div>
+												{{end}}
+											</td>
+										</tr>
+									{{end}}
+								{{else}}
+									<tr>
+										<td colspan="2">No data for display</td>
+									</tr>
+								{{end}}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
