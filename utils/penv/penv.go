@@ -24,6 +24,7 @@ type DumpVar struct {
 	Type     string
 	Value    string
 	Secret   bool
+	Required bool
 }
 
 func generate(name string) string {
@@ -92,6 +93,7 @@ func DumpConfig(config any) map[string]DumpVar {
 			description = NoDescription
 		}
 		secret := t.Field(i).Tag.Get("secret")
+		required := t.Field(i).Tag.Get("required")
 		if fieldType == "string" {
 			res[t.Field(i).Name] = DumpVar{
 				Name:     t.Field(i).Name,
@@ -101,6 +103,7 @@ func DumpConfig(config any) map[string]DumpVar {
 				Type:     cases.Title(language.English).String(fieldType),
 				Value:    *v.Field(i).Addr().Interface().(*string),
 				Secret:   secret == "1" || secret == "true",
+				Required: required == "1" || required == "true",
 			}
 		} else if fieldType == "int" {
 			res[t.Field(i).Name] = DumpVar{
@@ -111,6 +114,7 @@ func DumpConfig(config any) map[string]DumpVar {
 				Type:     cases.Title(language.English).String(fieldType),
 				Value:    fmt.Sprintf("%d", *v.Field(i).Addr().Interface().(*int)),
 				Secret:   secret == "1" || secret == "true",
+				Required: required == "1" || required == "true",
 			}
 		} else if fieldType == "int64" {
 			res[t.Field(i).Name] = DumpVar{
@@ -121,6 +125,7 @@ func DumpConfig(config any) map[string]DumpVar {
 				Type:     cases.Title(language.English).String(fieldType),
 				Value:    fmt.Sprintf("%d", *v.Field(i).Addr().Interface().(*int64)),
 				Secret:   secret == "1" || secret == "true",
+				Required: required == "1" || required == "true",
 			}
 		}
 	}
@@ -213,7 +218,7 @@ func ProcessConfig(config any) error {
 		required := t.Field(i).Tag.Get("required")
 		if required == "1" || required == "true" {
 			if !(isEnvPassed(nameEnv) || isFlagPassed(nameFlag)) {
-				return fmt.Errorf("variable '" + nameEnv + "' or flag '" + nameFlag + "' is not set")
+				return fmt.Errorf("variable '" + nameEnv + "' or flag '-" + nameFlag + "' is not set")
 			}
 		}
 	}
