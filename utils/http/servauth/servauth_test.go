@@ -62,6 +62,39 @@ var _ = Describe("servauth", func() {
 			Expect(err).To(Succeed())
 			Expect(string(body)).To(Equal("Index"))
 		})
+
+		It("don't request credentials on empty username", func() {
+			srv.Close()
+			srv = httptest.NewServer(servauth.BasicAuth(getTestHandler(), "", "", ""))
+			client = srv.Client()
+
+			resp, err := client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+
+			body, err := io.ReadAll(resp.Body)
+			Expect(err).To(Succeed())
+			Expect(string(body)).To(Equal("Index"))
+		})
+
+		It("request credentials on not empty username but empty password", func() {
+			srv.Close()
+			srv = httptest.NewServer(servauth.BasicAuth(getTestHandler(), "user", "", "msg"))
+			client = srv.Client()
+
+			resp, err := client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
+			Expect(resp.Header["Www-Authenticate"]).To(Equal([]string{`Basic realm="msg"`}))
+
+			body, err := io.ReadAll(resp.Body)
+			Expect(err).To(Succeed())
+			Expect(string(body)).To(Equal("Unauthorised\n"))
+		})
 	})
 })
 
