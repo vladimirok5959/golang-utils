@@ -20,6 +20,7 @@ type DumpVar struct {
 	Name     string
 	NameEnv  string
 	NameFlag string
+	Default  string
 	Desc     string
 	Type     string
 	Value    string
@@ -88,6 +89,7 @@ func DumpConfig(config any) map[string]DumpVar {
 		nameEnv := generateEnvName(t.Field(i).Name)
 		fieldType := t.Field(i).Type.Kind().String()
 		nameFlag := generateFlagName(t.Field(i).Name)
+		defvalue := t.Field(i).Tag.Get("default")
 		description := t.Field(i).Tag.Get("description")
 		if description == "" {
 			description = NoDescription
@@ -99,6 +101,7 @@ func DumpConfig(config any) map[string]DumpVar {
 				Name:     t.Field(i).Name,
 				NameEnv:  nameEnv,
 				NameFlag: nameFlag,
+				Default:  defvalue,
 				Desc:     description,
 				Type:     cases.Title(language.English).String(fieldType),
 				Value:    *v.Field(i).Addr().Interface().(*string),
@@ -110,6 +113,7 @@ func DumpConfig(config any) map[string]DumpVar {
 				Name:     t.Field(i).Name,
 				NameEnv:  nameEnv,
 				NameFlag: nameFlag,
+				Default:  defvalue,
 				Desc:     description,
 				Type:     cases.Title(language.English).String(fieldType),
 				Value:    fmt.Sprintf("%d", *v.Field(i).Addr().Interface().(*int)),
@@ -121,6 +125,7 @@ func DumpConfig(config any) map[string]DumpVar {
 				Name:     t.Field(i).Name,
 				NameEnv:  nameEnv,
 				NameFlag: nameFlag,
+				Default:  defvalue,
 				Desc:     description,
 				Type:     cases.Title(language.English).String(fieldType),
 				Value:    fmt.Sprintf("%d", *v.Field(i).Addr().Interface().(*int64)),
