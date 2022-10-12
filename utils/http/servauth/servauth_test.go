@@ -63,6 +63,23 @@ var _ = Describe("servauth", func() {
 			Expect(string(body)).To(Equal("Index"))
 		})
 
+		It("request credentials with default message", func() {
+			srv.Close()
+			srv = httptest.NewServer(servauth.BasicAuth(getTestHandler(), "user", "pass", ""))
+			client = srv.Client()
+
+			resp, err := client.Get(srv.URL + "/")
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
+			Expect(resp.Header["Www-Authenticate"]).To(Equal([]string{`Basic realm="Please enter username and password"`}))
+
+			body, err := io.ReadAll(resp.Body)
+			Expect(err).To(Succeed())
+			Expect(string(body)).To(Equal("Unauthorised\n"))
+		})
+
 		It("don't request credentials on empty username", func() {
 			srv.Close()
 			srv = httptest.NewServer(servauth.BasicAuth(getTestHandler(), "", "", ""))
