@@ -91,6 +91,26 @@ var _ = Describe("helpers", func() {
 				"192.168.0.50", "192.168.0.1", "127.0.0.1",
 			))
 		})
+
+		It("return array of client IPs without port", func() {
+			Expect(helpers.ClientIPs(&http.Request{
+				RemoteAddr: "[::1]:544722",
+			})).To(ConsistOf(
+				"[::1]",
+			))
+
+			Expect(helpers.ClientIPs(&http.Request{
+				RemoteAddr: "127.0.0.1:8080",
+			})).To(ConsistOf(
+				"127.0.0.1",
+			))
+
+			Expect(helpers.ClientIPs(&http.Request{
+				RemoteAddr: "192.168.0.1:80,127.0.0.1:443",
+			})).To(ConsistOf(
+				"192.168.0.1", "127.0.0.1",
+			))
+		})
 	})
 
 	Context("Handles", func() {

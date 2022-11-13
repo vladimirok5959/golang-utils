@@ -65,8 +65,12 @@ func ClientIPs(r *http.Request) []string {
 	res := []string{}
 	ips := strings.Split(ra, ",")
 	for _, ip := range ips {
-		ipPort := strings.Split(ip, ":")
-		res = append(res, strings.Trim(ipPort[0], " "))
+		i := strings.LastIndex(ip, ":")
+		if i < 0 {
+			res = append(res, strings.Trim(ip, " "))
+		} else {
+			res = append(res, strings.Trim(string([]rune(ip)[:i]), " "))
+		}
 	}
 	return res
 }
