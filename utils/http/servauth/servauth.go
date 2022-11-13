@@ -5,6 +5,8 @@ import (
 	"net/http"
 )
 
+// TODO: protect from bruteforce
+
 func BasicAuth(handler http.Handler, username, password, realm string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if username != "" {
