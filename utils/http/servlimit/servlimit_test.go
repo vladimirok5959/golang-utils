@@ -42,6 +42,7 @@ var _ = Describe("servlimit", func() {
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 
 			body, err := io.ReadAll(resp.Body)
 			Expect(err).To(Succeed())
@@ -54,6 +55,7 @@ var _ = Describe("servlimit", func() {
 			resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 
 			time.Sleep(1 * time.Second)
 
@@ -62,6 +64,7 @@ var _ = Describe("servlimit", func() {
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 
 			body, err := io.ReadAll(resp.Body)
 			Expect(err).To(Succeed())
@@ -74,12 +77,14 @@ var _ = Describe("servlimit", func() {
 			resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 
 			resp, err = client.Get(srv.URL + "/")
 			Expect(err).To(Succeed())
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusTooManyRequests))
+			Expect(resp.Header.Get("Retry-After")).To(Equal("1"))
 
 			body, err := io.ReadAll(resp.Body)
 			Expect(err).To(Succeed())
@@ -92,30 +97,35 @@ var _ = Describe("servlimit", func() {
 			resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 
 			resp, err = client.Get(srv.URL + "/")
 			Expect(err).To(Succeed())
 			resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusTooManyRequests))
+			Expect(resp.Header.Get("Retry-After")).To(Equal("1"))
 
 			resp, err = client.Get(srv.URL + "/")
 			Expect(err).To(Succeed())
 			resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusTooManyRequests))
+			Expect(resp.Header.Get("Retry-After")).To(Equal("1"))
 
 			resp, err = client.Get(srv.URL + "/")
 			Expect(err).To(Succeed())
 			resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusTooManyRequests))
+			Expect(resp.Header.Get("Retry-After")).To(Equal("1"))
 
 			resp, err = client.Get(srv.URL + "/")
 			Expect(err).To(Succeed())
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusTooManyRequests))
+			Expect(resp.Header.Get("Retry-After")).To(Equal("1"))
 
 			body, err := io.ReadAll(resp.Body)
 			Expect(err).To(Succeed())
@@ -134,6 +144,7 @@ var _ = Describe("servlimit", func() {
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 
 			body, err := io.ReadAll(resp.Body)
 			Expect(err).To(Succeed())
@@ -150,24 +161,28 @@ var _ = Describe("servlimit", func() {
 			resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 
 			resp, err = client.Get(srv.URL + "/")
 			Expect(err).To(Succeed())
 			resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 
 			resp, err = client.Get(srv.URL + "/")
 			Expect(err).To(Succeed())
 			resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusOK))
+			Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 
 			resp, err = client.Get(srv.URL + "/")
 			Expect(err).To(Succeed())
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusTooManyRequests))
+			Expect(resp.Header.Get("Retry-After")).To(Equal("1"))
 
 			body, err := io.ReadAll(resp.Body)
 			Expect(err).To(Succeed())

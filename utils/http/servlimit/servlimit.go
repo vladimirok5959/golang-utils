@@ -37,6 +37,7 @@ func ReqPerSecond(handler http.Handler, requests int) http.Handler {
 
 		// Restrict access
 		if reqs >= requests {
+			w.Header().Set("Retry-After", "1")
 			w.WriteHeader(429)
 			if _, err := w.Write([]byte("Too Many Requests\n")); err != nil {
 				log.Printf("%s\n", err.Error())
