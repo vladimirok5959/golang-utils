@@ -16,36 +16,38 @@ var mRequests = &Requests{
 
 func ReqPerSecond(handler http.Handler, requests int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Cleanup every hour
-		if (time.Now().UTC().Unix() - mRequests.cleanTime) > 3600 {
-			mRequests.Cleanup()
-		}
-
-		ip := helpers.ClientIP(r)
-		reqs := mRequests.Count(ip)
-		ltime := mRequests.Time(ip)
-
-		// Inc counter
-		reqs = reqs + 1
-		mRequests.SetCount(ip, reqs)
-
-		// Reset counter
-		if (time.Now().UTC().Unix() - ltime) >= 1 {
-			reqs = 0
-			mRequests.SetCount(ip, 0)
-		}
-
-		// Restrict access
-		if reqs >= requests {
-			w.Header().Set("Retry-After", "1")
-			w.WriteHeader(429)
-			if _, err := w.Write([]byte("Too Many Requests\n")); err != nil {
-				log.Printf("%s\n", err.Error())
+		if requests > 0 {
+			// Cleanup every hour
+			if (time.Now().UTC().Unix() - mRequests.cleanTime) > 3600 {
+				mRequests.Cleanup()
 			}
-			return
-		}
 
-		mRequests.SetTime(ip, time.Now().UTC().Unix())
+			ip := helpers.ClientIP(r)
+			reqs := mRequests.Count(ip)
+			ltime := mRequests.Time(ip)
+
+			// Inc counter
+			reqs = reqs + 1
+			mRequests.SetCount(ip, reqs)
+
+			// Reset counter
+			if (time.Now().UTC().Unix() - ltime) >= 1 {
+				reqs = 0
+				mRequests.SetCount(ip, 0)
+			}
+
+			// Restrict access
+			if reqs >= requests {
+				w.Header().Set("Retry-After", "1")
+				w.WriteHeader(429)
+				if _, err := w.Write([]byte("Too Many Requests\n")); err != nil {
+					log.Printf("%s\n", err.Error())
+				}
+				return
+			}
+
+			mRequests.SetTime(ip, time.Now().UTC().Unix())
+		}
 
 		handler.ServeHTTP(w, r)
 	})
