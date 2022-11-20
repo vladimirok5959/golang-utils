@@ -118,43 +118,14 @@ var _ = Describe("servauth", func() {
 			Expect(err).To(Succeed())
 			req.SetBasicAuth("user", "wrong")
 
-			// 1
+			for i := 1; i <= 5; i++ {
+				resp, err := client.Do(req)
+				Expect(err).To(Succeed())
+				Expect(resp.Body.Close())
+				Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
+			}
+
 			resp, err := client.Do(req)
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
-			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
-
-			// 2
-			resp, err = client.Do(req)
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
-			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
-
-			// 3
-			resp, err = client.Do(req)
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
-			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
-
-			// 4
-			resp, err = client.Do(req)
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
-			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
-
-			// 5
-			resp, err = client.Do(req)
-			Expect(err).To(Succeed())
-			defer resp.Body.Close()
-
-			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
-
-			// 6
-			resp, err = client.Do(req)
 			Expect(err).To(Succeed())
 			defer resp.Body.Close()
 
