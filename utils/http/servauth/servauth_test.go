@@ -130,6 +130,7 @@ var _ = Describe("servauth", func() {
 			defer resp.Body.Close()
 
 			Expect(resp.StatusCode).To(Equal(http.StatusTooManyRequests))
+			Expect(resp.Header.Get("Retry-After")).To(Equal("30"))
 
 			body, err := io.ReadAll(resp.Body)
 			Expect(err).To(Succeed())
