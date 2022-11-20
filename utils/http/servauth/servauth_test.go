@@ -112,6 +112,58 @@ var _ = Describe("servauth", func() {
 			Expect(err).To(Succeed())
 			Expect(string(body)).To(Equal("Unauthorised\n"))
 		})
+
+		It("block requests to 30 seconds on 5 times wrong entered credentials", func() {
+			req, err := http.NewRequest("GET", srv.URL+"/", nil)
+			Expect(err).To(Succeed())
+			req.SetBasicAuth("user", "wrong")
+
+			// 1
+			resp, err := client.Do(req)
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
+
+			// 2
+			resp, err = client.Do(req)
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
+
+			// 3
+			resp, err = client.Do(req)
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
+
+			// 4
+			resp, err = client.Do(req)
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
+
+			// 5
+			resp, err = client.Do(req)
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
+
+			// 6
+			resp, err = client.Do(req)
+			Expect(err).To(Succeed())
+			defer resp.Body.Close()
+
+			Expect(resp.StatusCode).To(Equal(http.StatusTooManyRequests))
+
+			body, err := io.ReadAll(resp.Body)
+			Expect(err).To(Succeed())
+			Expect(string(body)).To(Equal("Too Many Requests\n"))
+		})
 	})
 })
 
