@@ -33,7 +33,7 @@ func ReqPerSecond(handler http.Handler, requests int) http.Handler {
 			// Reset counter
 			if (time.Now().UTC().Unix() - ltime) >= 1 {
 				reqs = 0
-				mRequests.SetCount(ip, 0)
+				mRequests.SetCount(ip, reqs)
 			}
 
 			// Restrict access
