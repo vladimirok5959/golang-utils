@@ -121,7 +121,7 @@ var _ = Describe("servauth", func() {
 			for i := 1; i <= 5; i++ {
 				resp, err := client.Do(req)
 				Expect(err).To(Succeed())
-				Expect(resp.Body.Close())
+				Expect(resp.Body.Close()).To(Succeed())
 				Expect(resp.StatusCode).To(Equal(http.StatusUnauthorized))
 				Expect(resp.Header.Get("Retry-After")).To(Equal(""))
 			}
