@@ -18,7 +18,6 @@ func BasicAuth(handler http.Handler, username, password, realm string) http.Hand
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if username != "" {
 			mRequests.CleanupHourly()
-
 			ip := helpers.ClientIP(r)
 			reqs := mRequests.Count(ip)
 			ltime := mRequests.Time(ip)

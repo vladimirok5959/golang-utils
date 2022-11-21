@@ -18,7 +18,6 @@ func ReqPerSecond(handler http.Handler, requests int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if requests > 0 {
 			mRequests.CleanupHourly()
-
 			ip := helpers.ClientIP(r)
 			reqs := mRequests.Count(ip)
 			ltime := mRequests.Time(ip)
