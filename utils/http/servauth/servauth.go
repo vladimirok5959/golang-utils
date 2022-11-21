@@ -86,9 +86,11 @@ func BasicAuth(handler http.Handler, username, password, realm string) http.Hand
 			}
 
 			// Reset counter
-			reqs = 0
-			mRequests.SetCount(ip, reqs)
-			mRequests.SetTime(ip, time.Now().UTC().Unix())
+			if reqs > 0 {
+				reqs = 0
+				mRequests.SetCount(ip, reqs)
+				mRequests.SetTime(ip, time.Now().UTC().Unix())
+			}
 		}
 
 		handler.ServeHTTP(w, r)
