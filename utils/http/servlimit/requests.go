@@ -49,3 +49,9 @@ func (r *Requests) Cleanup() {
 	r.lastTime = map[string]int64{}
 	r.cleanTime = time.Now().UTC().Unix()
 }
+
+func (r *Requests) CleanupHourly() {
+	if (time.Now().UTC().Unix() - r.cleanTime) > 3600 {
+		r.Cleanup()
+	}
+}

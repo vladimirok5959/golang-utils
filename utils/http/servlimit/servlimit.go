@@ -17,10 +17,7 @@ var mRequests = &Requests{
 func ReqPerSecond(handler http.Handler, requests int) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if requests > 0 {
-			// Cleanup every hour
-			if (time.Now().UTC().Unix() - mRequests.cleanTime) > 3600 {
-				mRequests.Cleanup()
-			}
+			mRequests.CleanupHourly()
 
 			ip := helpers.ClientIP(r)
 			reqs := mRequests.Count(ip)
