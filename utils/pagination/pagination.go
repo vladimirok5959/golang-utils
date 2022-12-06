@@ -48,3 +48,8 @@ func (d *Data) ResultsCount() int64 {
 func (d *Data) ResultsPerPage() int64 {
 	return d.resultsPerPage
 }
+
+// Returns [LIMIT, OFFSET]
+func (d *Data) Limit() (int64, int64) {
+	return d.resultsPerPage, d.currentPage*d.resultsPerPage - d.resultsPerPage
+}

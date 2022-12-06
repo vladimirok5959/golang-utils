@@ -73,6 +73,30 @@ var _ = Describe("pagination", func() {
 				Expect(pagination.New(0, 0, 3).ResultsPerPage()).To(Equal(int64(3)))
 			})
 		})
+
+		Context("Limit", func() {
+			It("returns correct value", func() {
+				limit, offset := pagination.New(1, 10, 2).Limit()
+				Expect(limit).To(Equal(int64(2)))
+				Expect(offset).To(Equal(int64(0)))
+
+				limit, offset = pagination.New(2, 10, 2).Limit()
+				Expect(limit).To(Equal(int64(2)))
+				Expect(offset).To(Equal(int64(2)))
+
+				limit, offset = pagination.New(3, 10, 2).Limit()
+				Expect(limit).To(Equal(int64(2)))
+				Expect(offset).To(Equal(int64(4)))
+
+				limit, offset = pagination.New(4, 10, 2).Limit()
+				Expect(limit).To(Equal(int64(2)))
+				Expect(offset).To(Equal(int64(6)))
+
+				limit, offset = pagination.New(5, 10, 2).Limit()
+				Expect(limit).To(Equal(int64(2)))
+				Expect(offset).To(Equal(int64(8)))
+			})
+		})
 	})
 })
 
