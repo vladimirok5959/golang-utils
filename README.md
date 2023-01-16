@@ -165,4 +165,31 @@ func LogError(format string, a ...any)
 func LogInfo(format string, a ...any)
 func LogInternalError(err error)
 func LogRequests(handler http.Handler) http.Handler
+
+// Write logs to file:
+func main() {
+    logger.AccessLogFile = consts.Config.AccessLogFile
+    logger.ErrorLogFile = consts.Config.ErrorLogFile
+    ...
+}
+```
+
+RollBar supports from box:
+
+```go
+func main() {
+    logger.RollBarEnabled = (consts.Config.Deployment == "production")
+
+    logger.RollBarSkipErrors = []string{
+        "context canceled",
+    }
+
+    rollbar.SetToken("token")
+    rollbar.SetEnvironment(consts.Config.Deployment)
+    rollbar.SetCodeVersion(consts.AppVersion)
+
+    ...
+
+    rollbar.Wait()
+}
 ```
