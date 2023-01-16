@@ -193,3 +193,9 @@ func main() {
     rollbar.Wait()
 }
 ```
+
+HTTP request redirect helper:
+
+```go
+func redirect.Handler(url string) http.Handler
+```
