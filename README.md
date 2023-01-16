@@ -231,3 +231,39 @@ Used for limiting count of requests per second for client IP
 ```go
 func ReqPerSecond(handler http.Handler, requests int) http.Handler
 ```
+
+## utils/http/servtools
+
+HTTP handler, universal template and renderer for config
+
+```go
+func ConfigVars(config any) http.Handler
+```
+
+```go
+package consts
+
+var Config struct {
+    Host string `default:"127.0.0.1" description:"Web server IP"`
+    Port string `default:"8080" description:"Web server port"`
+}
+
+// Example:
+mux.Get("/config", servtools.ConfigVars(&consts.Config))
+```
+
+## utils/pagination
+
+Pagination helper for build SQL request and HTML template
+
+```go
+func New(currentPage, resultsCount, resultsPerPage int64) *Data
+```
+
+```go
+func (d *Data) CurrentPage() int64
+func (d *Data) MaxPages() int64
+func (d *Data) ResultsCount() int64
+func (d *Data) ResultsPerPage() int64
+func (d *Data) Limit() (int64, int64)
+```
