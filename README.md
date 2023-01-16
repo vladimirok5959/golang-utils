@@ -4,7 +4,7 @@ Different kind of functions for second reusage
 
 ## utils/http/apiserv
 
-Web server, which can use regular expressions in path. Designed to be simple and for usage for project with API and etc
+Web server, which can use regular expressions in path. Designed to be simple and for project with API
 
 ```go
 package server
