@@ -223,3 +223,11 @@ Used for adding basic authentication for any HTTP handler
 ```go
 func BasicAuth(handler http.Handler, username, password, realm string) http.Handler
 ```
+
+## utils/http/servlimit
+
+Used for limiting count of requests per second for client IP
+
+```go
+func ReqPerSecond(handler http.Handler, requests int) http.Handler
+```
