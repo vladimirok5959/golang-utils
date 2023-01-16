@@ -23,6 +23,10 @@ type base.Handler struct {
     Shutdown context.CancelFunc
 }
 
+func (h base.Handler) FuncMap(w http.ResponseWriter, r *http.Request) template.FuncMap {
+    return template.FuncMap{}
+}
+
 func NewMux(ctx context.Context, shutdown context.CancelFunc, db *database.DataBase) *apiserv.ServeMux {
     mux := apiserv.NewServeMux()
 
