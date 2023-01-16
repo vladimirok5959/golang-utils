@@ -133,3 +133,25 @@ type CurlGetOpts struct {
 func CurlDownload(ctx context.Context, url string, opts *CurlGetOpts, fileName string, filePath ...string) error
 func CurlGet(ctx context.Context, url string, opts *CurlGetOpts) ([]byte, error)
 ```
+
+```go
+func ClientIP(r *http.Request) string
+func ClientIPs(r *http.Request) []string
+func HandleAppStatus() http.Handler
+func HandleFile(data, contentType string) http.Handler
+func HandleImageJpeg(data string) http.Handler
+func HandleImagePng(data string) http.Handler
+func HandleTextCss(data string) http.Handler
+func HandleTextJavaScript(data string) http.Handler
+func HandleTextPlain(data string) http.Handler
+func HandleTextXml(data string) http.Handler
+func IntToStr(value int64) string
+func Md5Hash(str []byte) string
+func MinifyHtmlCode(str string) string
+func MinifyHtmlJsCode(str string) string
+func RespondAsBadRequest(w http.ResponseWriter, r *http.Request, err error)
+func RespondAsInternalServerError(w http.ResponseWriter, r *http.Request)
+func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
+func SessionStart(w http.ResponseWriter, r *http.Request) (*session.Session, error)
+func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error
+```
