@@ -120,3 +120,16 @@ func New(ctx context.Context, shutdown context.CancelFunc, db *database.DataBase
     return srv, nil
 }
 ```
+
+## utils/http/helpers
+
+```go
+type CurlGetOpts struct {
+    ExpectStatusCode int
+    Headers          map[string][]string
+    Timeout          time.Duration
+}
+
+func CurlDownload(ctx context.Context, url string, opts *CurlGetOpts, fileName string, filePath ...string) error
+func CurlGet(ctx context.Context, url string, opts *CurlGetOpts) ([]byte, error)
+```
