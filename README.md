@@ -254,7 +254,7 @@ mux.Get("/config", servtools.ConfigVars(&consts.Config))
 
 ## utils/pagination
 
-Pagination helper for build SQL request and HTML template
+Pagination helper for build SQL query and HTML template
 
 ```go
 func New(currentPage, resultsCount, resultsPerPage int64) *Data
