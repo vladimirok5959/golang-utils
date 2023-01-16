@@ -267,3 +267,30 @@ func (d *Data) ResultsCount() int64
 func (d *Data) ResultsPerPage() int64
 func (d *Data) Limit() (int64, int64)
 ```
+
+## utils/penv
+
+Auto-config for parameters and ENV variables
+
+```go
+var Config struct {
+    Host string `default:"127.0.0.1" description:"Web server IP"`
+    Port string `default:"8080" description:"Web server port"`
+}
+
+// Example:
+func init() {
+    if err := penv.ProcessConfig(&Config); err != nil {
+        panic(err)
+    }
+}
+
+func main() {
+    fmt.Printf("%s\n", Config.Host)
+    fmt.Printf("%s\n", Config.Port)
+}
+
+// Auto generated params and ENVs:
+// Params will be readed: host, port
+// ENV will be readed too: ENV_HOST, ENV_PORT
+```
