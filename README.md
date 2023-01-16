@@ -216,3 +216,10 @@ func HTML(w http.ResponseWriter, r *http.Request, f template.FuncMap, d interfac
 func JSON(w http.ResponseWriter, r *http.Request, o interface{}) bool
 ```
 
+## utils/http/servauth
+
+Used for adding basic authentication for any HTTP handler
+
+```go
+func BasicAuth(handler http.Handler, username, password, realm string) http.Handler
+```
