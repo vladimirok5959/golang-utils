@@ -7,25 +7,70 @@ Different kind of functions for second reusage
 Web server, which can use regular expressions in path. Designed to be simple and for project with API
 
 ```go
-package server
+package base
 
 import (
-    "context"
-    "fmt"
     "net/http"
     ...
 )
 
-// External package
-type base.Handler struct {
+type Handler struct {
     Ctx      context.Context
     DB       *database.DataBase
     Shutdown context.CancelFunc
 }
 
-func (h base.Handler) FuncMap(w http.ResponseWriter, r *http.Request) template.FuncMap {
+type ServerData struct {
+    ...
+}
+
+func (h Handler) FuncMap(w http.ResponseWriter, r *http.Request) template.FuncMap {
     return template.FuncMap{}
 }
+```
+
+```go
+package page_index
+
+import (
+    "net/http"
+    ...
+)
+
+type Handler struct {
+    base.Handler
+}
+
+func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+    sess := h.SessionStart(w, r)
+    if sess == nil {
+        return
+    }
+    defer sess.Close()
+
+    // /api/v1/aliases/{i}
+    // apiserv.GetParams(r)[1].Integer()
+
+    // /api/v1/aliases/{s}
+    // apiserv.GetParams(r)[1].String()
+
+    ...
+
+    data := &base.ServerData{}
+
+    if !render.HTML(w, r, h.FuncMap(w, r), data, web.IndexHtml, http.StatusOK) {
+        return
+    }
+}
+```
+
+```go
+package server
+
+import (
+    "net/http"
+    ...
+)
 
 func NewMux(ctx context.Context, shutdown context.CancelFunc, db *database.DataBase) *apiserv.ServeMux {
     mux := apiserv.NewServeMux()
