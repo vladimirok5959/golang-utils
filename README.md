@@ -268,6 +268,25 @@ func (d *Data) ResultsPerPage() int64
 func (d *Data) Limit() (int64, int64)
 ```
 
+```go
+// Example:
+currentPage := int64(1)
+params := apiserv.GetParams(r)
+if len(params) == 2 {
+    currentPage = params[1].Integer()
+}
+
+resultsCount := int64(0)
+if err := h.DB.QueryRow(r.Context(), "SELECT COUNT(*) FROM logs").Scan(&resultsCount); err != nil {
+    ...
+}
+
+pagination = pagination.New(currentPage, resultsCount, consts.PaginationRowsPerPage)
+limit, offset := pagination.Limit()
+
+// SELECT * FROM logs ORDER BY id ASC LIMIT $1 OFFSET $3
+```
+
 ## utils/penv
 
 Auto-config for parameters and ENV variables
