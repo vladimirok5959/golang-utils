@@ -194,8 +194,25 @@ func main() {
 }
 ```
 
+## utils/http/redirect
+
 HTTP request redirect helper:
 
 ```go
 func redirect.Handler(url string) http.Handler
 ```
+
+```go
+// Example:
+mux.Get("/old", redirect.Handler("/new"))
+```
+
+## utils/http/render
+
+Used for rendering HTML pages and for JSON API responses
+
+```go
+func HTML(w http.ResponseWriter, r *http.Request, f template.FuncMap, d interface{}, s string, httpStatusCode int) bool
+func JSON(w http.ResponseWriter, r *http.Request, o interface{}) bool
+```
+
