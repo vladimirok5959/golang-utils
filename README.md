@@ -294,3 +294,9 @@ func main() {
 // Params will be readed: host, port
 // ENV will be readed too: ENV_HOST, ENV_PORT
 ```
+
+## utils
+
+```go
+func RandomString(length int) string
+```
