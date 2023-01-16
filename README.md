@@ -155,3 +155,14 @@ func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
 func SessionStart(w http.ResponseWriter, r *http.Request) (*session.Session, error)
 func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error
 ```
+
+## utils/http/logger
+
+Used for write logs, `LogRequests` can be used in handlers chain
+
+```go
+func LogError(format string, a ...any)
+func LogInfo(format string, a ...any)
+func LogInternalError(err error)
+func LogRequests(handler http.Handler) http.Handler
+```
