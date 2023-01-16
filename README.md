@@ -199,7 +199,7 @@ func main() {
 HTTP request redirect helper:
 
 ```go
-func redirect.Handler(url string) http.Handler
+func Handler(url string) http.Handler
 ```
 
 ```go
