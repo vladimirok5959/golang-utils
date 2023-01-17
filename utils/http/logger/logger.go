@@ -49,7 +49,13 @@ func LogInfo(format string, a ...any) {
 }
 
 func LogInternalError(err error) {
-	log.Printf("%s\n", err.Error())
+	msg := fmt.Sprintf("%s\n", err.Error())
+	log.Printf("%s", msg)
+	if ErrorLogFile != "" {
+		if err := appendToLogFile(ErrorLogFile, time.Now().Format("2006/01/02 15:04:05")+" "+msg); err != nil {
+			log.Printf("%s\n", err.Error())
+		}
+	}
 	if RollBarEnabled && !RollBarSkipErrors.contain(err.Error()) {
 		rollbar.Error(err)
 	}

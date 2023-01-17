@@ -6,6 +6,8 @@ import (
 	"log"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"strings"
 	"testing"
 
 	. "github.com/onsi/ginkgo"
@@ -14,6 +16,32 @@ import (
 )
 
 var _ = Describe("logger", func() {
+	Context("LogInternalError", func() {
+		original := logger.ErrorLogFile
+		logger.ErrorLogFile = "/tmp/test-err-out.log"
+
+		f, err := os.OpenFile(logger.ErrorLogFile, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0666)
+		Expect(err).To(Succeed())
+		_, err = fmt.Fprint(f, "")
+		Expect(err).To(Succeed())
+		Expect(f.Close()).To(Succeed())
+
+		logger.LogInternalError(fmt.Errorf("MyError 1"))
+		file, err := os.ReadFile(logger.ErrorLogFile)
+		Expect(err).To(Succeed())
+		content := string(file)
+		Expect(strings.HasSuffix(content, "MyError 1\n")).To(Equal(true))
+
+		logger.LogInternalError(fmt.Errorf("MyError 2"))
+		file, err = os.ReadFile(logger.ErrorLogFile)
+		Expect(err).To(Succeed())
+		content = string(file)
+		Expect(strings.HasSuffix(content, "MyError 2\n")).To(Equal(true))
+
+		// Restore original value
+		logger.ErrorLogFile = original
+	})
+
 	Context("LogRequests", func() {
 		var srv *httptest.Server
 		var client *http.Client
