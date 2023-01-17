@@ -104,8 +104,8 @@ func NewMux(ctx context.Context, shutdown context.CancelFunc, db *database.DataB
 func New(ctx context.Context, shutdown context.CancelFunc, db *database.DataBase) (*http.Server, error) {
     mux := NewMux(ctx, shutdown, db)
     srv := &http.Server{
-    Addr:   consts.Config.Host + ":" + consts.Config.Port,
-            Handler: mux,
+        Addr:    consts.Config.Host + ":" + consts.Config.Port,
+        Handler: mux,
     }
     go func() {
         fmt.Printf("Web server: http://%s:%s/\n", consts.Config.Host, consts.Config.Port)
