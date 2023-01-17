@@ -87,8 +87,8 @@ func NewMux(ctx context.Context, shutdown context.CancelFunc, db *database.DataB
 
     // API
     mux.Get("/api/v1/app/health", v1_app_health.Handler{Handler: handler})
-    mux.Handle("/api/v1/aliases", []string{http.MethodGet, http.MethodPost}, v1_aliases.Handler{Handler: handler})  
-    mux.Handle("/api/v1/aliases/{i}", []string{http.MethodGet, http.MethodPut, http.MethodDelete}, v1_aliases.Handler{Handler: handler})
+    mux.Handle("/api/v1/aliases", apiserv.Methods().Get().Post(), v1_aliases.Handler{Handler: handler})  
+    mux.Handle("/api/v1/aliases/{i}", apiserv.Methods().Get().Put().Delete(), v1_aliases.Handler{Handler: handler})
 
     // Assets
     mux.Get("/favicon.png", helpers.HandleImagePng(web.FaviconPng))
