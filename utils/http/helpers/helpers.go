@@ -21,6 +21,7 @@ import (
 // func ClientIPs(r *http.Request) []string
 // func HandleAppStatus() http.Handler
 // func HandleFile(data, contentType string) http.Handler
+// func HandleImageGif(data string) http.Handler
 // func HandleImageJpeg(data string) http.Handler
 // func HandleImagePng(data string) http.Handler
 // func HandleTextCss(data string) http.Handler
@@ -131,6 +132,10 @@ func HandleFile(data, contentType string) http.Handler {
 			log.Printf("%s\n", err.Error())
 		}
 	})
+}
+
+func HandleImageGif(data string) http.Handler {
+	return HandleFile(data, "image/gif")
 }
 
 func HandleImageJpeg(data string) http.Handler {

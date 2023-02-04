@@ -139,6 +139,7 @@ func ClientIP(r *http.Request) string
 func ClientIPs(r *http.Request) []string
 func HandleAppStatus() http.Handler
 func HandleFile(data, contentType string) http.Handler
+func HandleImageGif(data string) http.Handler
 func HandleImageJpeg(data string) http.Handler
 func HandleImagePng(data string) http.Handler
 func HandleTextCss(data string) http.Handler
