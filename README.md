@@ -146,7 +146,8 @@ func HandleTextCss(data string) http.Handler
 func HandleTextJavaScript(data string) http.Handler
 func HandleTextPlain(data string) http.Handler
 func HandleTextXml(data string) http.Handler
-func IntToStr(value int64) string
+func IntToStr(value int) string
+func IntToStr64(value int64) string
 func Md5Hash(str []byte) string
 func MinifyHtmlCode(str string) string
 func MinifyHtmlJsCode(str string) string
@@ -155,6 +156,8 @@ func RespondAsInternalServerError(w http.ResponseWriter, r *http.Request)
 func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
 func SessionStart(w http.ResponseWriter, r *http.Request) (*session.Session, error)
 func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error
+func StrToInt(value string) int
+func StrToInt64(value string) int64
 ```
 
 ## utils/http/logger

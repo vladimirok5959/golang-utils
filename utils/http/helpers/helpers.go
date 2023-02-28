@@ -28,7 +28,8 @@ import (
 // func HandleTextJavaScript(data string) http.Handler
 // func HandleTextPlain(data string) http.Handler
 // func HandleTextXml(data string) http.Handler
-// func IntToStr(value int64) string
+// func IntToStr(value int) string
+// func IntToStr64(value int64) string
 // func Md5Hash(str []byte) string
 // func MinifyHtmlCode(str string) string
 // func MinifyHtmlJsCode(str string) string
@@ -37,6 +38,8 @@ import (
 // func RespondAsMethodNotAllowed(w http.ResponseWriter, r *http.Request)
 // func SessionStart(w http.ResponseWriter, r *http.Request) (*session.Session, error)
 // func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error
+// func StrToInt(value string) int
+// func StrToInt64(value string) int64
 
 var mHtml = regexp.MustCompile(`>[\n\t\r]+<`)
 var mHtmlLeft = regexp.MustCompile(`>[\n\t\r]+`)
@@ -162,7 +165,11 @@ func HandleTextXml(data string) http.Handler {
 	return HandleFile(data, "text/xml")
 }
 
-func IntToStr(value int64) string {
+func IntToStr(value int) string {
+	return strconv.FormatInt(int64(value), 10)
+}
+
+func IntToStr64(value int64) string {
 	return strconv.FormatInt(value, 10)
 }
 
@@ -279,6 +286,20 @@ func SetLanguageCookie(w http.ResponseWriter, r *http.Request) error {
 		})
 	}
 	return nil
+}
+
+func StrToInt(value string) int {
+	if v, err := strconv.Atoi(value); err == nil {
+		return v
+	}
+	return 0
+}
+
+func StrToInt64(value string) int64 {
+	if v, err := strconv.ParseInt(value, 10, 64); err == nil {
+		return v
+	}
+	return 0
 }
 
 // -----------------------------------------------------------------------------

@@ -345,6 +345,16 @@ var _ = Describe("helpers", func() {
 			})
 		})
 
+		Context("IntToStr64", func() {
+			It("convert int to string", func() {
+				Expect(helpers.IntToStr64(1)).To(Equal("1"))
+				Expect(helpers.IntToStr64(5)).To(Equal("5"))
+				Expect(helpers.IntToStr64(50)).To(Equal("50"))
+				Expect(helpers.IntToStr64(100)).To(Equal("100"))
+				Expect(helpers.IntToStr64(1000)).To(Equal("1000"))
+			})
+		})
+
 		Context("RespondAsBadRequest", func() {
 			BeforeEach(func() {
 				var handler = func() http.HandlerFunc {
@@ -466,6 +476,28 @@ var _ = Describe("helpers", func() {
 					<b>Contacts:</b> <a href="#">Link 1</a>, <a href="#">Link 2</a>
 				</div>
 			`)).To(Equal(`<div><b>Contacts:</b> <a href="#">Link 1</a>, <a href="#">Link 2</a></div>`))
+		})
+	})
+
+	Context("StrToInt", func() {
+		It("convert int to string", func() {
+			Expect(helpers.StrToInt("")).To(Equal(0))
+			Expect(helpers.StrToInt("1")).To(Equal(1))
+			Expect(helpers.StrToInt("5")).To(Equal(5))
+			Expect(helpers.StrToInt("50")).To(Equal(50))
+			Expect(helpers.StrToInt("100")).To(Equal(100))
+			Expect(helpers.StrToInt("1000")).To(Equal(1000))
+		})
+	})
+
+	Context("StrToInt64", func() {
+		It("convert int to string", func() {
+			Expect(helpers.StrToInt64("")).To(Equal(int64(0)))
+			Expect(helpers.StrToInt64("1")).To(Equal(int64(1)))
+			Expect(helpers.StrToInt64("5")).To(Equal(int64(5)))
+			Expect(helpers.StrToInt64("50")).To(Equal(int64(50)))
+			Expect(helpers.StrToInt64("100")).To(Equal(int64(100)))
+			Expect(helpers.StrToInt64("1000")).To(Equal(int64(1000)))
 		})
 	})
 
