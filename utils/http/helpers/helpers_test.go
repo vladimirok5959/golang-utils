@@ -311,6 +311,21 @@ var _ = Describe("helpers", func() {
 			})
 		})
 
+		Context("InArrayInt", func() {
+			Expect(helpers.InArrayInt(3, []int{1, 2, 3, 4, 5})).To(BeTrue())
+			Expect(helpers.InArrayInt(9, []int{1, 2, 3, 4, 5})).To(BeFalse())
+		})
+
+		Context("InArrayInt64", func() {
+			Expect(helpers.InArrayInt64(3, []int64{1, 2, 3, 4, 5})).To(BeTrue())
+			Expect(helpers.InArrayInt64(9, []int64{1, 2, 3, 4, 5})).To(BeFalse())
+		})
+
+		Context("InArrayStr", func() {
+			Expect(helpers.InArrayStr("3", []string{"1", "2", "3"})).To(BeTrue())
+			Expect(helpers.InArrayStr("9", []string{"1", "2", "3"})).To(BeFalse())
+		})
+
 		Context("HandleTextXml", func() {
 			BeforeEach(func() {
 				srv = httptest.NewServer(helpers.HandleTextXml("MyContent"))

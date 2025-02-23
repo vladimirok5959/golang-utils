@@ -28,6 +28,9 @@ import (
 // func HandleTextJavaScript(data string) http.Handler
 // func HandleTextPlain(data string) http.Handler
 // func HandleTextXml(data string) http.Handler
+// func InArrayInt(num int, arr []int) bool
+// func InArrayInt64(num int64, arr []int64) bool
+// func InArrayStr(str string, arr []string) bool
 // func IntToStr(value int) string
 // func IntToStr64(value int64) string
 // func Md5Hash(str []byte) string
@@ -159,6 +162,33 @@ func HandleTextJavaScript(data string) http.Handler {
 
 func HandleTextPlain(data string) http.Handler {
 	return HandleFile(data, "text/plain")
+}
+
+func InArrayInt(num int, arr []int) bool {
+	for _, v := range arr {
+		if num == v {
+			return true
+		}
+	}
+	return false
+}
+
+func InArrayInt64(num int64, arr []int64) bool {
+	for _, v := range arr {
+		if num == v {
+			return true
+		}
+	}
+	return false
+}
+
+func InArrayStr(str string, arr []string) bool {
+	for _, v := range arr {
+		if str == v {
+			return true
+		}
+	}
+	return false
 }
 
 func HandleTextXml(data string) http.Handler {
