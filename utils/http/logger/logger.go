@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 
@@ -29,7 +30,16 @@ func appendToLogFile(fileName, msg string) error {
 }
 
 func LogError(format string, a ...any) {
-	msg := fmt.Sprintf(format, a...)
+	msg := fmt.Sprintf("[ERROR] %s\n", fmt.Sprintf(format, a...))
+	if pc, file, line, ok := runtime.Caller(1); ok {
+		msg = fmt.Sprintf(
+			"[ERROR] (%s, line #%d, func: %v) %s\n",
+			file,
+			line,
+			runtime.FuncForPC(pc).Name(),
+			fmt.Sprintf(format, a...),
+		)
+	}
 	log.Printf("%s", msg)
 	if ErrorLogFile != "" {
 		if err := appendToLogFile(ErrorLogFile, time.Now().Format("2006/01/02 15:04:05")+" "+msg); err != nil {
@@ -39,7 +49,7 @@ func LogError(format string, a ...any) {
 }
 
 func LogInfo(format string, a ...any) {
-	msg := fmt.Sprintf(format, a...)
+	msg := fmt.Sprintf("[INFO] %s\n", fmt.Sprintf(format, a...))
 	log.Printf("%s", msg)
 	if AccessLogFile != "" {
 		if err := appendToLogFile(AccessLogFile, time.Now().Format("2006/01/02 15:04:05")+" "+msg); err != nil {
@@ -49,7 +59,16 @@ func LogInfo(format string, a ...any) {
 }
 
 func LogInternalError(err error) {
-	msg := fmt.Sprintf("%s\n", err.Error())
+	msg := fmt.Sprintf("[ERROR] %s\n", err.Error())
+	if pc, file, line, ok := runtime.Caller(1); ok {
+		msg = fmt.Sprintf(
+			"[ERROR] (%s, line #%d, func: %v) %s\n",
+			file,
+			line,
+			runtime.FuncForPC(pc).Name(),
+			err.Error(),
+		)
+	}
 	log.Printf("%s", msg)
 	if ErrorLogFile != "" {
 		if err := appendToLogFile(ErrorLogFile, time.Now().Format("2006/01/02 15:04:05")+" "+msg); err != nil {
@@ -85,15 +104,16 @@ func LogRequests(handler http.Handler) http.Handler {
 			time.Since(start).Seconds(),
 			ua,
 		)
-		log.Printf("%s", msg)
 
 		if nw.Status < 400 {
+			log.Printf("[ACCESS] %s", msg)
 			if AccessLogFile != "" {
 				if err := appendToLogFile(AccessLogFile, start.Format("2006/01/02 15:04:05")+" "+msg); err != nil {
 					log.Printf("%s\n", err.Error())
 				}
 			}
 		} else {
+			log.Printf("[ERROR] %s", msg)
 			if ErrorLogFile != "" {
 				if err := appendToLogFile(ErrorLogFile, start.Format("2006/01/02 15:04:05")+" "+msg); err != nil {
 					log.Printf("%s\n", err.Error())
