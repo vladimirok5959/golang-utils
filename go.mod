@@ -1,6 +1,6 @@
 module github.com/vladimirok5959/golang-utils
 
-go 1.19
+go 1.23
 
 require (
 	github.com/onsi/ginkgo v1.16.5
